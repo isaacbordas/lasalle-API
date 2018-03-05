@@ -1,0 +1,29 @@
+App\Component\Film\Domain\Film:
+  type: entity
+  table: film
+  id:
+    id:
+      type: integer
+      nullable: false
+      options:
+        unsigned: false
+      id: true
+      generator:
+        strategy: AUTO
+  fields:
+    name:
+        type: string
+        nullable: false
+        length: 100
+        options:
+          fixed: false
+    description:
+      type: text
+  manyToOne:
+    actor:
+      targetEntity: Actor
+      cascade: ["persist"]
+      joinColumns:
+        actor_id:
+          referencedColumnName: id
+      orphanRemoval: false

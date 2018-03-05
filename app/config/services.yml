@@ -1,0 +1,27 @@
+# Learn more about services, parameters and containers at
+# https://symfony.com/doc/current/service_container.html
+parameters:
+    filecachepath: '%kernel.project_dir%/var/cache/filecache/'
+
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  app.film.actor.metadata:
+    class: Doctrine\ORM\Mapping\ClassMetadata
+    factory_service: doctrine
+    factory_method: getRepository
+    arguments: [ App\Component\Product\Domain\Actor ]
+
+#  app.film.repository.actor:
+#      class: App\Bundle\FilmBundle\Actor\Repository\ActorRepository
+#      arguments:
+#        em: '@doctrine.orm.entity_manager'
+#        mapping: '@app.film.actor.metadata'
+
+  app.filecache:
+    class: App\Bundle\FilmBundle\Service\Cache\FileCache
+    arguments:
+      $filecachepath: '%filecachepath%'

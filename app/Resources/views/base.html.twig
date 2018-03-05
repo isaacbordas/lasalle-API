@@ -1,0 +1,20 @@
+{% set route = app.request.attributes.get('_route') %}
+{% set route_params = app.request.attributes.get('_route_params') %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    </head>
+    <body>
+    <ul>
+        <li>Change language</li>
+        <li><a href="/es/changeLang/es/{{ route }}/{{ route_params.id }}/">ES</a></li>
+        <li><a href="/en/changeLang/en/{{ route }}/{{ route_params.id }}/">EN</a></li>
+    </ul>
+        {% block body %}{% endblock %}
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

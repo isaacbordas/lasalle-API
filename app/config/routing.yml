@@ -1,0 +1,15 @@
+ChangeLang:
+    path: /{_locale}/changeLang/{lang}/{route}/{id}/
+    defaults: { _controller: \App\Bundle\FilmBundle\Film\Controller\DefaultFilmController::changeLangAction, id: 0 }
+    requirements:
+        _locale: '%app.locales%'
+
+showFilm:
+  path: /{_locale}/showFilm/{id}/
+  defaults: { _controller: \App\Bundle\FilmBundle\Film\Controller\ShowFilmController::showFilmAction }
+  methods: [GET]
+
+showActor:
+  path: /{_locale}/showActor/{id}/
+  defaults: { _controller: \App\Bundle\FilmBundle\Actor\Controller\ShowActorController::showActorAction }
+  methods: [GET]

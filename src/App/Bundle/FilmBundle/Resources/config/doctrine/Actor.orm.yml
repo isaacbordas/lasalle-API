@@ -1,0 +1,19 @@
+App\Component\Film\Domain\Actor:
+  type: entity
+  table: actor
+  id:
+    id:
+      type: integer
+      nullable: false
+      options:
+        unsigned: false
+      id: true
+      generator:
+        strategy: AUTO
+  fields:
+    name:
+      type: string
+      nullable: false
+      length: 100
+      options:
+        fixed: false

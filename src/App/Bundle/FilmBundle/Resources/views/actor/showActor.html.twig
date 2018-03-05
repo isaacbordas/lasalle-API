@@ -1,0 +1,6 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{'title.app'|trans({},'messages')}}{% endblock %}
+{% block body %}
+    <h1>{{'showactortitle.app'|trans({},'messages')}}</h1>
+    <p>Actor: <b>{{ actor.getName }}</b></p>
+{% endblock %}
