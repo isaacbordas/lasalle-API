@@ -16,7 +16,7 @@ class ActorRepository extends EntityRepository implements Film\Domain\Repository
     {
         return $this->getEntityManager()
             ->createQuery(
-                'SELECT o FROM \App\Component\Film\Domain\Owner o ORDER BY o.name ASC'
+                'SELECT o FROM \App\Component\Film\Domain\Actor o ORDER BY o.name ASC'
             )
             ->getResult();
     }

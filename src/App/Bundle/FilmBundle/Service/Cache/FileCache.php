@@ -13,54 +13,64 @@ class FileCache extends Controller
         $this->filecachepath = $filecachepath;
     }
 
-    public function store($key, $data, $ttl = 3600) {
-        // Opening the file
-        $h = fopen($this->getFileName($key),'w');
-        if (!$h) throw new Exception('Could not write to cache');
-        // Serializing along with the TTL
-        $data = serialize(array(time()+$ttl,$data));
-        if (fwrite($h,$data)===false) {
+    public function store(string $key, object $data, int $ttl = 3600) : void
+    {
+        $handler = fopen($this->getFileName($key),'w');
+        if (!$handler) {
             throw new Exception('Could not write to cache');
         }
-        fclose($h);
 
+        $data = serialize(array(time()+$ttl, $data));
+
+        if (fwrite($handler, $data) === false) {
+            throw new Exception('Could not write to cache');
+        }
+        fclose($handler);
     }
 
-    private function getFileName($key) {
-
-        $path = $this->filecachepath;
+    private function getFileName(string $key) : string
+    {
+       $path = $this->filecachepath;
         if(!is_dir($path)) {
             mkdir($path);
         }
 
         return $path . md5($key);
-
     }
 
-    function fetch($key) {
-
-        $filename = $this->getFileName($key);
-        if (!file_exists($filename) || !is_readable($filename)) return false;
+    function fetch(string $key)
+    {
+       $filename = $this->getFileName($key);
+        if (!file_exists($filename) || !is_readable($filename)) {
+            return false;
+        }
 
         $data = file_get_contents($filename);
 
         $data = @unserialize($data);
         if (!$data) {
-
-            // Unlinking the file when unserializing failed
             unlink($filename);
             return false;
-
         }
 
-        // checking if the data was expired
         if (time() > $data[0]) {
-
-            // Unlinking
             unlink($filename);
             return false;
-
         }
+
         return $data[1];
+    }
+
+    public function cacheClear() : void
+    {
+        $cachedir = $this->filecachepath;
+
+        $files = glob($cachedir . '/*');
+
+        foreach($files as $file) {
+            if(is_file($file)) {
+                unlink($file);
+            }
+        }
     }
 }
