@@ -13,16 +13,16 @@ class FileCache extends Controller
         $this->filecachepath = $filecachepath;
     }
 
-    public function store(string $key, $data, int $ttl = 3600) : void
+    public function store(string $key, $data) : void
     {
         $handler = fopen($this->getFileName($key),'w');
         if (!$handler) {
             throw new Exception('Could not write to cache');
         }
 
-        $data = serialize(array(time()+$ttl, $data));
+        $serializedobject = serialize($data);
 
-        if (fwrite($handler, $data) === false) {
+        if (fwrite($handler, $serializedobject) === false) {
             throw new Exception('Could not write to cache');
         }
         fclose($handler);
@@ -47,18 +47,13 @@ class FileCache extends Controller
 
         $data = file_get_contents($filename);
 
-        $data = @unserialize($data);
-        if (!$data) {
+        $unserializedobject = unserialize($data);
+        if (!$unserializedobject) {
             unlink($filename);
             return false;
         }
 
-        if (time() > $data[0]) {
-            unlink($filename);
-            return false;
-        }
-
-        return $data[1];
+        return $unserializedobject;
     }
 
     public function cacheClear() : void

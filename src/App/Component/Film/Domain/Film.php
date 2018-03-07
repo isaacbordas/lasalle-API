@@ -65,14 +65,7 @@ class Film
      */
     public function getActor()
     {
-        return $this->actor;
+        return $this->actor->getName();
     }
 
-    /**
-     * @param mixed $actor
-     */
-    public function setActor($actor)
-    {
-        $this->actor = $actor;
-    }
 }

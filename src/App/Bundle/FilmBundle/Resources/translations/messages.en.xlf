@@ -14,6 +14,22 @@
                 <source>showactortitle.app</source>
                 <target>Actor's information</target>
             </trans-unit>
+            <trans-unit id="4">
+                <source>title.film</source>
+                <target>Title</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>description.film</source>
+                <target>Description</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>actor.film</source>
+                <target>Actor</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>actor.actor</source>
+                <target>Actor</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

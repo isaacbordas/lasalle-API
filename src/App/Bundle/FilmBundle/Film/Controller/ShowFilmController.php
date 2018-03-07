@@ -11,12 +11,12 @@ class ShowFilmController extends Controller
     {
         $cache = $this->get('app.filecache');
 
-        $hit = $cache->fetch('findOneById' . $id . $request->getLocale());
+        $hit = $cache->fetch('findOneFilmById' . $id . $request->getLocale());
         if(!$hit) {
             $film = $this->getDoctrine()->getRepository('\App\Component\Film\Domain\Film')->findOneBy(['id' => $id]);
             try{
-                $cache->store('findOneById' . $id . $request->getLocale(), $film);
-            } catch (Exception $e) {
+                $cache->store('findOneFilmById' . $id . $request->getLocale(), $film);
+            } catch (\Exception $e) {
                 throw $e;
             }
             $this->addFlash("fail", "Cache not hit");
