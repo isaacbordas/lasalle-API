@@ -13,7 +13,7 @@ class FileCache extends Controller
         $this->filecachepath = $filecachepath;
     }
 
-    public function store(string $key, object $data, int $ttl = 3600) : void
+    public function store(string $key, $data, int $ttl = 3600) : void
     {
         $handler = fopen($this->getFileName($key),'w');
         if (!$handler) {

@@ -3,16 +3,18 @@
 namespace App\Bundle\FilmBundle\Film\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 class ShowFilmController extends Controller
 {
-    public function showFilmAction(int $id)
+    public function showFilmAction(int $id, Request $request)
     {
         $cache = $this->get('app.filecache');
-        $hit = $cache->fetch('findOneById' . $id);
+
+        $hit = $cache->fetch('findOneById' . $id . $request->getLocale());
         if(!$hit) {
             $film = $this->getDoctrine()->getRepository('\App\Component\Film\Domain\Film')->findOneBy(['id' => $id]);
-            $cache->store('findOneById' . $id, $film);
+            $cache->store('findOneById' . $id . $request->getLocale(), $film);
             $this->addFlash("fail", "Cache not hit");
         } else {
             $film = $hit;
