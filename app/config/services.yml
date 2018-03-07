@@ -3,23 +3,27 @@
 parameters:
 
 services:
-  _defaults:
-    autowire: true
-    autoconfigure: true
-    public: true
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
 
-  app.film.actor.metadata:
-    class: Doctrine\ORM\Mapping\ClassMetadata
-    factory: doctrine:getRepository
-    arguments: [ App\Component\Film\Domain\Actor ]
+    App\Bundle\FilmBundle\EventSubscriber\LocaleSubscriber:
+        - class: App\Bundle\FilmBundle\EventSubscriber\LocaleSubscriber
+        - arguments: ['%kernel.default_locale%']
 
-  app.film.repository.actor:
-      class: App\Bundle\FilmBundle\Actor\Repository\ActorRepository
+    app.film.actor.metadata:
+      class: Doctrine\ORM\Mapping\ClassMetadata
+      factory: doctrine:getRepository
+      arguments: [ App\Component\Film\Domain\Actor ]
+
+    app.film.repository.actor:
+        class: App\Bundle\FilmBundle\Actor\Repository\ActorRepository
+        arguments:
+          - '@doctrine.orm.entity_manager'
+          - '@app.film.actor.metadata'
+
+    app.filecache:
+      class: App\Bundle\FilmBundle\Service\Cache\FileCache
       arguments:
-        - '@doctrine.orm.entity_manager'
-        - '@app.film.actor.metadata'
-
-  app.filecache:
-    class: App\Bundle\FilmBundle\Service\Cache\FileCache
-    arguments:
-      $filecachepath: '%filecachepath%'
+        $filecachepath: '%filecachepath%'

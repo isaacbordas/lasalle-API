@@ -10,7 +10,7 @@ class LocaleSubscriber implements EventSubscriberInterface
 {
     private $defaultLocale;
 
-    public function __construct($defaultLocale = 'es')
+    public function __construct($defaultLocale)
     {
         $this->defaultLocale = $defaultLocale;
     }
@@ -35,7 +35,7 @@ class LocaleSubscriber implements EventSubscriberInterface
     {
         return array(
             // must be registered after the default Locale listener
-            KernelEvents::REQUEST => array(array('onKernelRequest', 15)),
+            KernelEvents::REQUEST => array(array('onKernelRequest', 17)),
         );
     }
 }
