@@ -10,7 +10,7 @@ class ClearCacheController extends Controller
 {
         public function execute(Request $request)
         {
-            $cache = $this->get('app.filecache');
+            $cache = $this->get('app.CacheService');
             $cache->cacheClear();
             $referer = $request->headers->get('referer');
 

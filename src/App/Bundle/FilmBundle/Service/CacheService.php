@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Bundle\FilmBundle\Service\Cache;
+namespace App\Bundle\FilmBundle\Service;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-class FileCache extends Controller
+class CacheService extends Controller implements \App\Component\Film\Application\Service\CacheService
 {
     private $filecachepath;
 
@@ -28,7 +28,7 @@ class FileCache extends Controller
         fclose($handler);
     }
 
-    private function getFileName(string $key) : string
+    public function getFileName(string $key) : string
     {
        $path = $this->filecachepath;
         if(!is_dir($path)) {

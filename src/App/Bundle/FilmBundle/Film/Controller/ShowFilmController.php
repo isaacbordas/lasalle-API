@@ -9,7 +9,7 @@ class ShowFilmController extends Controller
 {
     public function showFilmAction(int $id, Request $request)
     {
-        $cache = $this->get('app.filecache');
+        $cache = $this->get('app.CacheService');
 
         $hit = $cache->fetch('findOneFilmById' . $id . $request->getLocale());
         if(!$hit) {
