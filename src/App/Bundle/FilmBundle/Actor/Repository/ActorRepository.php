@@ -7,7 +7,7 @@ use Doctrine\ORM\EntityRepository;
 
 class ActorRepository extends EntityRepository implements Film\Domain\Repository\ActorRepository
 {
-    public function findById($actorId)
+    public function findById(int $actorId)
     {
         return $this->findOneBy(['id' => $actorId]);
     }

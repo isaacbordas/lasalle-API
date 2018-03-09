@@ -5,11 +5,8 @@ namespace App\Component\Film\Domain;
 class Film
 {
     private $id;
-
     private $name;
-
     private $description;
-
     private $actor;
 
     public function __construct(string $name, string $description, Actor $actor)
@@ -19,50 +16,32 @@ class Film
         $this->actor = $actor;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getName()
+    public function getName() : string
     {
         return $this->name;
     }
 
-    /**
-     * @param mixed $name
-     */
-    public function setName($name)
+    public function setName(string $name)
     {
         $this->name = $name;
 
     }
 
-    /**
-     * @return mixed
-     */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
 
-    /**
-     * @param mixed $description
-     */
-    public function setDescription($description)
+    public function setDescription(string $description)
     {
         $this->description = $description;
     }
 
-    /**
-     * @return mixed
-     */
     public function getActor()
     {
         return $this->actor->getName();

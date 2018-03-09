@@ -22,9 +22,6 @@ App\Component\Film\Domain\Film:
   manyToOne:
     actor:
       targetEntity: Actor
-      reversedBy: Film
-      cascade: ["persist"]
-      joinColumns:
-        actor_id:
-          referencedColumnName: id
-      orphanRemoval: false
+      joinColumn:
+        name: actor_id
+        referencedColumnName: id

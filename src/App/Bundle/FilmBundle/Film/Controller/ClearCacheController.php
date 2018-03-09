@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class ClearCacheController extends Controller
 {
-        public function execute(Request $request)
+        public function execute(Request $request): RedirectResponse
         {
             $cache = $this->get('app.CacheService');
             $cache->cacheClear();

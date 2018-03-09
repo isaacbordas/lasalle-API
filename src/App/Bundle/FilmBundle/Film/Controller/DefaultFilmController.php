@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class DefaultFilmController extends Controller
 {
-    public function changeLangAction($lang, $route, $id = null)
+    public function changeLangAction(string $lang, string $route, $id = null): RedirectResponse
     {
         $id = (empty($id) ? null : $id . '/');
         $this->get('session')->set('_locale', $lang);

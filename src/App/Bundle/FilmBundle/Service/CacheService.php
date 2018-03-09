@@ -8,7 +8,7 @@ class CacheService extends Controller implements \App\Component\Film\Application
 {
     private $filecachepath;
 
-    public function __construct($filecachepath)
+    public function __construct(string $filecachepath)
     {
         $this->filecachepath = $filecachepath;
     }

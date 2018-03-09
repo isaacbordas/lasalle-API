@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% block title %}{{'title.app'|trans({},'messages')}}{% endblock %}
 {% block body %}
+    {{ dump(film) }}
     <h1>{{'showfilmtitle.app'|trans({},'messages')}}</h1>
     <p>{{'title.film'|trans({},'messages')}}: <b>{{ film.getName }}</b></p>
     <p>{{'description.film'|trans({},'messages')}}: <b>{{ film.getDescription }}</b></p>

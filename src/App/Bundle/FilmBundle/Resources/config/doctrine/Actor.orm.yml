@@ -15,5 +15,3 @@ App\Component\Film\Domain\Actor:
       type: string
       nullable: false
       length: 100
-      options:
-        fixed: false
