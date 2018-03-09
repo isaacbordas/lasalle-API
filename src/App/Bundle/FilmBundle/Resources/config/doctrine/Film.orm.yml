@@ -22,6 +22,7 @@ App\Component\Film\Domain\Film:
   manyToOne:
     actor:
       targetEntity: Actor
+      fetch: EAGER
       joinColumn:
         name: actor_id
         referencedColumnName: id
