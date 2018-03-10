@@ -30,6 +30,14 @@
                 <source>actor.actor</source>
                 <target>Actor</target>
             </trans-unit>
+            <trans-unit id="8">
+                <source>actor.noactor</source>
+                <target>No se ha encontrado ningún actor con el ID indicado</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>film.nofilm</source>
+                <target>No se ha encontrado ninguna película con el ID indicado</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

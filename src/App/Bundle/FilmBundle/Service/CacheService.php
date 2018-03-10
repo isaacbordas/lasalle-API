@@ -2,6 +2,7 @@
 
 namespace App\Bundle\FilmBundle\Service;
 
+use App\Bundle\FilmBundle\EventSubscriber\DeleteCache;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class CacheService extends Controller implements \App\Component\Film\Application\Service\CacheService
@@ -68,4 +69,10 @@ class CacheService extends Controller implements \App\Component\Film\Application
             }
         }
     }
+
+    public function onDeletecache(DeleteCache $deleteCache)
+    {
+        $this->cacheClear();
+    }
+
 }

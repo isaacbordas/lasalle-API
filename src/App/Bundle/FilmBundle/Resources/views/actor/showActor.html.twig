@@ -1,6 +1,10 @@
 {% extends 'base.html.twig' %}
 {% block title %}{{'title.app'|trans({},'messages')}}{% endblock %}
 {% block body %}
+    {%  if actor.getName is defined %}
     <h1>{{'showactortitle.app'|trans({},'messages')}}</h1>
     <p>{{'actor.actor'|trans({},'messages')}}: <b>{{ actor.getName }}</b></p>
+    {% else %}
+    <h1>{{'actor.noactor'|trans({},'messages')}}</h1>
+    {% endif %}
 {% endblock %}

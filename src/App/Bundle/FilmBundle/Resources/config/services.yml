@@ -1,7 +1,7 @@
 services:
     App\Bundle\FilmBundle\EventSubscriber\LocaleSubscriber:
-        - class: App\Bundle\FilmBundle\EventSubscriber\LocaleSubscriber
-        - arguments: ['%kernel.default_locale%']
+      - class: App\Bundle\FilmBundle\EventSubscriber\LocaleSubscriber
+      - arguments: ['%kernel.default_locale%']
 
     app.film.actor.metadata:
       class: Doctrine\ORM\Mapping\ClassMetadata
@@ -9,12 +9,31 @@ services:
       arguments: [ App\Component\Film\Domain\Actor ]
 
     app.film.repository.actor:
-        class: App\Bundle\FilmBundle\Actor\Repository\ActorRepository
-        arguments:
-          - '@doctrine.orm.entity_manager'
-          - '@app.film.actor.metadata'
+     class: App\Bundle\FilmBundle\Actor\Repository\ActorRepository
+     arguments:
+       - '@doctrine.orm.entity_manager'
+       - '@app.film.actor.metadata'
 
     app.cacheservice:
       class: App\Bundle\FilmBundle\Service\CacheService
       arguments:
         $filecachepath: '%filecachepath%'
+
+    app.actor.usecase.deleteactor:
+      class: App\Component\Film\Application\UseCase\Actor\DeleteActorUseCase
+      arguments:
+        - '@doctrine.orm.entity_manager'
+        - '@event_dispatcher'
+
+    app.film.usecase.deletefilm:
+      class: App\Component\Film\Application\UseCase\Film\DeleteFilmUseCase
+      arguments:
+        - '@doctrine.orm.entity_manager'
+        - '@event_dispatcher'
+
+    app.service.deletecache:
+      class: App\Bundle\FilmBundle\Service\CacheService
+      arguments:
+        $filecachepath: '%filecachepath%'
+      tags:
+        - { name: kernel.event_listener, event: deletecache }

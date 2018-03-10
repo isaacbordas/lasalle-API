@@ -30,6 +30,14 @@
                 <source>actor.actor</source>
                 <target>Actor</target>
             </trans-unit>
+            <trans-unit id="8">
+                <source>actor.noactor</source>
+                <target>No actor found with the specified ID</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>film.nofilm</source>
+                <target>No film found with the specified ID</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

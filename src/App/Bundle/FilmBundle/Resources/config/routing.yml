@@ -9,6 +9,11 @@ film_byId:
   defaults: { _controller: \App\Bundle\FilmBundle\Film\API\Controller\ListFilmsController::findById }
   methods: [GET]
 
+film_deleteById:
+  path: /api/delete/film/{id}/
+  defaults: { _controller: \App\Bundle\FilmBundle\Film\API\Controller\DeleteFilmController::execute }
+  methods: [DELETE]
+
 actor_list:
   path: /api/actor/
   defaults: { _controller: \App\Bundle\FilmBundle\Actor\API\Controller\ListActorsController::findAll }
@@ -18,6 +23,11 @@ actor_byId:
   path: /api/actor/{id}/
   defaults: { _controller: \App\Bundle\FilmBundle\Actor\API\Controller\ListActorsController::findById }
   methods: [GET]
+
+actor_deleteById:
+  path: /api/delete/actor/{id}/
+  defaults: { _controller: \App\Bundle\FilmBundle\Actor\API\Controller\DeleteActorController::execute }
+  methods: [DELETE]
 
 #Web routes
 ChangeLang:
