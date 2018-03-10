@@ -1,0 +1,43 @@
+#API routes
+film_list:
+  path: /api/film/
+  defaults: { _controller: \App\Bundle\FilmBundle\Film\API\Controller\ListFilmsController::findAll }
+  methods: [GET]
+
+film_byId:
+  path: /api/film/{id}/
+  defaults: { _controller: \App\Bundle\FilmBundle\Film\API\Controller\ListFilmsController::findById }
+  methods: [GET]
+
+actor_list:
+  path: /api/actor/
+  defaults: { _controller: \App\Bundle\FilmBundle\Actor\API\Controller\ListActorsController::findAll }
+  methods: [GET]
+
+actor_byId:
+  path: /api/actor/{id}/
+  defaults: { _controller: \App\Bundle\FilmBundle\Actor\API\Controller\ListActorsController::findById }
+  methods: [GET]
+
+#Web routes
+ChangeLang:
+    path: /{_locale}/changeLang/{lang}/{route}/{id}/
+    defaults: { _controller: \App\Bundle\FilmBundle\Film\Controller\DefaultFilmController::changeLangAction }
+    requirements:
+        _locale: '%app.locales%'
+
+showFilm:
+  path: /{_locale}/showFilm/{id}/
+  defaults: { _controller: \App\Bundle\FilmBundle\Film\Controller\ShowFilmController::showFilmAction }
+  methods: [GET]
+
+showActor:
+  path: /{_locale}/showActor/{id}/
+  defaults: { _controller: \App\Bundle\FilmBundle\Actor\Controller\ShowActorController::showActorAction }
+  methods: [GET]
+
+clearCache:
+  path: /{_locale}/clearCache/
+  defaults: { _controller: \App\Bundle\FilmBundle\Film\Controller\ClearCacheController::execute }
+
+

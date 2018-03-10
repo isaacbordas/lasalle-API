@@ -1,0 +1,20 @@
+services:
+    App\Bundle\FilmBundle\EventSubscriber\LocaleSubscriber:
+        - class: App\Bundle\FilmBundle\EventSubscriber\LocaleSubscriber
+        - arguments: ['%kernel.default_locale%']
+
+    app.film.actor.metadata:
+      class: Doctrine\ORM\Mapping\ClassMetadata
+      factory: doctrine:getRepository
+      arguments: [ App\Component\Film\Domain\Actor ]
+
+    app.film.repository.actor:
+        class: App\Bundle\FilmBundle\Actor\Repository\ActorRepository
+        arguments:
+          - '@doctrine.orm.entity_manager'
+          - '@app.film.actor.metadata'
+
+    app.cacheservice:
+      class: App\Bundle\FilmBundle\Service\CacheService
+      arguments:
+        $filecachepath: '%filecachepath%'

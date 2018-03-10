@@ -9,7 +9,7 @@ class ShowActorController extends Controller
 {
     public function showActorAction(int $id, Request $request)
     {
-        $cache = $this->get('app.filecache');
+        $cache = $this->get('app.cacheservice');
 
         $hit = $cache->fetch('findOneActorById' . $id . $request->getLocale());
         if(!$hit) {
@@ -17,7 +17,7 @@ class ShowActorController extends Controller
             try{
                 $cache->store('findOneActorById' . $id . $request->getLocale(), $actor);
             } catch (\Exception $e) {
-                throw $e;
+                echo $e->getMessage();
             }
             $this->addFlash("fail", "Cache not hit");
         } else {
