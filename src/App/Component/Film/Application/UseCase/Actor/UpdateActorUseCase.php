@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use App\Bundle\FilmBundle\EventSubscriber\DeleteCache;
 use App\Component\Film\Domain\Actor;
+use App\Component\Film\Application\Exception\InvalidActorNameException;
 
 class UpdateActorUseCase
 {
@@ -18,9 +19,13 @@ class UpdateActorUseCase
         $this->dispatcher = $dispatcher;
     }
 
-    public function execute(array $actorData, Actor $actor)
+    public function execute(string $name, Actor $actor)
     {
-        $actor->setName($actorData['name']);
+        if(empty($name)) {
+            throw InvalidActorNameException::empty();
+        }
+
+        $actor->setName($name);
 
         $this->entityManager->flush();
 

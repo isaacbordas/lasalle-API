@@ -11,7 +11,7 @@ class DeleteFilmController extends Controller
     public function execute(Request $request)
     {
         $json = json_decode($request->getContent(), true);
-        $id = $json['id'];
+        $id = filter_var($json['id'] ?? '', FILTER_SANITIZE_NUMBER_INT);
 
         $deleteFilmUseCase = $this->get('app.film.usecase.delete');
         $deleteFilmUseCase->execute($id);

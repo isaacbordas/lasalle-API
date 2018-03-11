@@ -11,9 +11,9 @@ class CreateFilmController extends Controller
     public function execute(Request $request)
     {
         $json = json_decode($request->getContent(), true);
-        $name = $json['name'];
-        $description = $json['description'];
-        $actorId = $json['actorId'];
+        $name = filter_var($json['name'] ?? '', FILTER_SANITIZE_STRING);
+        $description = filter_var($json['description'] ?? '', FILTER_SANITIZE_STRING);
+        $actorId = filter_var($json['actorId'] ?? '', FILTER_SANITIZE_NUMBER_INT);
 
         $createFilmUseCase = $this->get('app.film.usecase.create');
         $createFilmUseCase->execute($name, $description, $actorId);

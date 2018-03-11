@@ -35,7 +35,7 @@ class ListFilmsController extends Controller
     public function findById(Request $request)
     {
         $json = json_decode($request->getContent(), true);
-        $id = $json['id'];
+        $id = filter_var($json['id'] ?? '', FILTER_SANITIZE_NUMBER_INT);
 
         $cache = $this->get('app.cacheservice');
 

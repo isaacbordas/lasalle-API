@@ -21,12 +21,12 @@ class UpdateFilmUseCase
         $this->dispatcher = $dispatcher;
     }
 
-    public function execute(array $filmData, Film $film)
+    public function execute($name, $description, $actorId, Film $film)
     {
-        $actor = $this->actorRepository->findById($filmData['actorId']);
+        $actor = $this->actorRepository->findById($actorId);
 
-        $film->setName($filmData['name']);
-        $film->setDescription($filmData['description']);
+        $film->setName($name);
+        $film->setDescription($description);
         $film->setActor($actor);
 
         $this->entityManager->flush();

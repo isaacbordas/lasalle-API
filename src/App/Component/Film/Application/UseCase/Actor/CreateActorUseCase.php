@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use App\Bundle\FilmBundle\EventSubscriber\DeleteCache;
 use App\Component\Film\Domain\Actor;
+use App\Component\Film\Application\Exception\InvalidActorNameException;
 
 class CreateActorUseCase
 {
@@ -20,6 +21,10 @@ class CreateActorUseCase
 
     public function execute(string $name)
     {
+        if(empty($name)) {
+            throw InvalidActorNameException::empty();
+        }
+
         $actor = new Actor($name);
 
         $this->entityManager->persist($actor);
