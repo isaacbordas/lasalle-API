@@ -31,8 +31,21 @@ services:
         - '@doctrine.orm.entity_manager'
         - '@event_dispatcher'
 
+    app.film.usecase.update:
+      class: App\Component\Film\Application\UseCase\Film\UpdateFilmUseCase
+      arguments:
+         - '@app.film.repository.actor'
+         - '@doctrine.orm.entity_manager'
+         - '@event_dispatcher'
+
     app.actor.usecase.create:
       class: App\Component\Film\Application\UseCase\Actor\CreateActorUseCase
+      arguments:
+        - '@doctrine.orm.entity_manager'
+        - '@event_dispatcher'
+
+    app.actor.usecase.update:
+      class: App\Component\Film\Application\UseCase\Actor\UpdateActorUseCase
       arguments:
         - '@doctrine.orm.entity_manager'
         - '@event_dispatcher'

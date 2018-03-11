@@ -19,6 +19,11 @@ film_create:
   defaults: { _controller: \App\Bundle\FilmBundle\Film\API\Controller\CreateFilmController::execute }
   methods: [POST]
 
+film_update:
+  path: /api/update/film/{id}/
+  defaults: { _controller: \App\Bundle\FilmBundle\Film\API\Controller\UpdateFilmController::execute }
+  methods: [PUT]
+
 actor_list:
   path: /api/actor/
   defaults: { _controller: \App\Bundle\FilmBundle\Actor\API\Controller\ListActorsController::findAll }
@@ -33,6 +38,11 @@ actor_create:
   path: /api/create/actor/
   defaults: { _controller: \App\Bundle\FilmBundle\Actor\API\Controller\CreateActorController::execute }
   methods: [POST]
+
+actor_update:
+  path: /api/update/actor/{id}/
+  defaults: { _controller: \App\Bundle\FilmBundle\Actor\API\Controller\UpdateActorController::execute }
+  methods: [PUT]
 
 actor_deleteById:
   path: /api/delete/actor/

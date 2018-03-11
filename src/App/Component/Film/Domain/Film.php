@@ -42,9 +42,14 @@ class Film
         $this->description = $description;
     }
 
-    public function getActor() : string
+    public function getActor(): string
     {
         return $this->actor->getName();
+    }
+
+    public function setActor(Actor $actor)
+    {
+        $this->actor = $actor;
     }
 
 }
