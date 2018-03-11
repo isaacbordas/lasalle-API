@@ -5,7 +5,6 @@ services:
 
     app.film.actor.metadata:
       class: Doctrine\ORM\Mapping\ClassMetadata
-      factory: doctrine:getRepository
       arguments: [ App\Component\Film\Domain\Actor ]
 
     app.film.repository.actor:
@@ -19,14 +18,27 @@ services:
       arguments:
         $filecachepath: '%filecachepath%'
 
-    app.actor.usecase.deleteactor:
-      class: App\Component\Film\Application\UseCase\Actor\DeleteActorUseCase
+    app.film.usecase.delete:
+      class: App\Component\Film\Application\UseCase\Film\DeleteFilmUseCase
       arguments:
         - '@doctrine.orm.entity_manager'
         - '@event_dispatcher'
 
-    app.film.usecase.deletefilm:
-      class: App\Component\Film\Application\UseCase\Film\DeleteFilmUseCase
+    app.film.usecase.create:
+      class: App\Component\Film\Application\UseCase\Film\CreateFilmUseCase
+      arguments:
+        - '@app.film.repository.actor'
+        - '@doctrine.orm.entity_manager'
+        - '@event_dispatcher'
+
+    app.actor.usecase.create:
+      class: App\Component\Film\Application\UseCase\Actor\CreateActorUseCase
+      arguments:
+        - '@doctrine.orm.entity_manager'
+        - '@event_dispatcher'
+
+    app.actor.usecase.delete:
+      class: App\Component\Film\Application\UseCase\Actor\DeleteActorUseCase
       arguments:
         - '@doctrine.orm.entity_manager'
         - '@event_dispatcher'

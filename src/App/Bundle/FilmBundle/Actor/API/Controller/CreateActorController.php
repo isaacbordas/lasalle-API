@@ -6,16 +6,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class DeleteActorController extends Controller
+class CreateActorController extends Controller
 {
     public function execute(Request $request)
     {
         $json = json_decode($request->getContent(), true);
-        $id = $json['id'];
+        $name = $json['name'];
 
-        $deleteActorUseCase = $this->get('app.actor.usecase.delete');
-        $deleteActorUseCase->execute($id);
-
-        return new JsonResponse('', 204);
+        $createActorUseCase = $this->get('app.actor.usecase.create');
+        $createActorUseCase->execute($name);
+        return new JsonResponse(['result' => 'Actor created'], 201);
     }
 }

@@ -6,6 +6,7 @@ use Doctrine\ORM\Query;
 use App\Component\Film\Domain\Actor;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class ListActorsController extends Controller
 {
@@ -28,11 +29,14 @@ class ListActorsController extends Controller
         $actorsAsArray = array_map(function (Actor $a) {
             return $this->actorToArray($a);
         }, $actors);
-        return new JsonResponse($actorsAsArray);
+        return new JsonResponse($actorsAsArray, 200);
     }
 
-    public function findById(int $id)
+    public function findById(Request $request)
     {
+        $json = json_decode($request->getContent(), true);
+        $id = $json['id'];
+
         $cache = $this->get('app.cacheservice');
 
         $hit = $cache->fetch('findOneActorByIdViaAPI' . $id);
@@ -50,7 +54,7 @@ class ListActorsController extends Controller
         $actorsAsArray = array_map(function (Actor $a) {
             return $this->actorToArray($a);
         }, $actor);
-        return new JsonResponse($actorsAsArray);
+        return new JsonResponse($actorsAsArray, 200);
     }
 
     private function actorToArray(Actor $actor)

@@ -5,14 +5,19 @@ film_list:
   methods: [GET]
 
 film_byId:
-  path: /api/film/{id}/
+  path: /api/filmById/
   defaults: { _controller: \App\Bundle\FilmBundle\Film\API\Controller\ListFilmsController::findById }
-  methods: [GET]
+  methods: [POST]
 
 film_deleteById:
-  path: /api/delete/film/{id}/
+  path: /api/delete/film/
   defaults: { _controller: \App\Bundle\FilmBundle\Film\API\Controller\DeleteFilmController::execute }
   methods: [DELETE]
+
+film_create:
+  path: /api/create/film/
+  defaults: { _controller: \App\Bundle\FilmBundle\Film\API\Controller\CreateFilmController::execute }
+  methods: [POST]
 
 actor_list:
   path: /api/actor/
@@ -20,12 +25,17 @@ actor_list:
   methods: [GET]
 
 actor_byId:
-  path: /api/actor/{id}/
+  path: /api/actorById/
   defaults: { _controller: \App\Bundle\FilmBundle\Actor\API\Controller\ListActorsController::findById }
-  methods: [GET]
+  methods: [POST]
+
+actor_create:
+  path: /api/create/actor/
+  defaults: { _controller: \App\Bundle\FilmBundle\Actor\API\Controller\CreateActorController::execute }
+  methods: [POST]
 
 actor_deleteById:
-  path: /api/delete/actor/{id}/
+  path: /api/delete/actor/
   defaults: { _controller: \App\Bundle\FilmBundle\Actor\API\Controller\DeleteActorController::execute }
   methods: [DELETE]
 

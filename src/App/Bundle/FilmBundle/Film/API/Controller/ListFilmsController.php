@@ -6,6 +6,7 @@ use Doctrine\ORM\Query;
 use App\Component\Film\Domain\Film;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class ListFilmsController extends Controller
 {
@@ -31,8 +32,11 @@ class ListFilmsController extends Controller
         return new JsonResponse($filmsAsArray);
     }
 
-    public function findById(int $id)
+    public function findById(Request $request)
     {
+        $json = json_decode($request->getContent(), true);
+        $id = $json['id'];
+
         $cache = $this->get('app.cacheservice');
 
         $hit = $cache->fetch('findOneFilmByIdViaAPI' . $id);
