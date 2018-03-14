@@ -5,6 +5,7 @@ namespace App\Bundle\FilmBundle\Film\API\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Component\Film\Application\Exception\InvalidFilmNameException;
 
 class UpdateFilmController extends Controller
 {
@@ -17,9 +18,12 @@ class UpdateFilmController extends Controller
 
         $film = $this->getDoctrine()->getRepository('\App\Component\Film\Domain\Film')->findOneBy(['id' => $id]);
 
-        $updateFilmUseCase = $this->get('app.film.usecase.update');
-        $updateFilmUseCase->execute($name, $description, $actorId, $film);
-
-        return new JsonResponse(['result' => 'Film updated'], 200);
+        try {
+            $updateFilmUseCase = $this->get('app.film.usecase.update');
+            $updateFilmUseCase->execute($name, $description, $actorId, $film);
+            return new JsonResponse(['result' => 'Film updated'], 200);
+        } catch (InvalidFilmNameException $e) {
+            return new JsonResponse(['error' => $e->getMessage()], 400);
+        }
     }
 }

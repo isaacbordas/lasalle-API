@@ -7,6 +7,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use App\Bundle\FilmBundle\EventSubscriber\DeleteCache;
 use App\Component\Film\Domain\Film;
 use App\Component\Film\Domain\Repository\ActorRepository;
+use App\Component\Film\Application\Exception\InvalidFilmNameException;
 
 class UpdateFilmUseCase
 {
@@ -23,6 +24,10 @@ class UpdateFilmUseCase
 
     public function execute($name, $description, $actorId, Film $film)
     {
+        if(empty($name)) {
+            throw InvalidFilmNameException::empty();
+        }
+
         $actor = $this->actorRepository->findById($actorId);
 
         $film->setName($name);
