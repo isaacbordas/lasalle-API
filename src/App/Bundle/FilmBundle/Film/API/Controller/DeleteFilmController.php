@@ -5,6 +5,7 @@ namespace App\Bundle\FilmBundle\Film\API\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Component\Film\Application\Exception\InvalidFilmIdException;
 
 class DeleteFilmController extends Controller
 {
@@ -13,9 +14,12 @@ class DeleteFilmController extends Controller
         $json = json_decode($request->getContent(), true);
         $id = filter_var($json['id'] ?? '', FILTER_SANITIZE_NUMBER_INT);
 
-        $deleteFilmUseCase = $this->get('app.film.usecase.delete');
-        $deleteFilmUseCase->execute($id);
-
-        return new JsonResponse('', 204);
+        try {
+            $deleteFilmUseCase = $this->get('app.film.usecase.delete');
+            $deleteFilmUseCase->execute($id);
+            return new JsonResponse('', 204);
+        } catch (InvalidFilmIdException $e) {
+            return new JsonResponse(['error' => $e->getMessage()], 400);
+        }
     }
 }
