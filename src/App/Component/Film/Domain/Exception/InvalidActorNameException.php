@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Component\Film\Application\Exception;
+namespace App\Component\Film\Domain\Exception;
 
 
 class InvalidActorNameException extends InvalidArgumentException

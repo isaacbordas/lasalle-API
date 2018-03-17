@@ -3,31 +3,32 @@
 namespace App\Bundle\FilmBundle\Actor\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
+use App\Component\Film\Domain\Actor;
+use App\Component\Film\Application\Command\Actor\ReadActorByIdCommand;
+use App\Component\Film\Domain\Exception\InvalidArgumentException;
+use App\Component\Film\Domain\Exception\RepositoryException;
 
 class ShowActorController extends Controller
 {
-    public function showActorAction(int $id, Request $request)
+    public function showActorAction(int $id)
     {
-        $cache = $this->get('app.cacheservice');
+        $actorId = filter_var($id ?? '', FILTER_SANITIZE_NUMBER_INT);
 
-        $hit = $cache->fetch('findOneActorById' . $id . $request->getLocale());
-        if(!$hit) {
-            $actor = $this->getDoctrine()->getRepository('\App\Component\Film\Domain\Actor')->findOneBy(['id' => $id]);
-            try{
-                $cache->store('findOneActorById' . $id . $request->getLocale(), $actor);
-            } catch (\Exception $e) {
-                echo $e->getMessage();
-            }
-            $this->addFlash("fail", "Cache not hit");
-        } else {
-            $actor = $hit;
-            $this->addFlash("success", "Cache hit");
+        $command = new ReadActorByIdCommand($actorId);
+        $handler = $this->get('app.actor.command_handler.read_by_id');
+
+        try {
+            $actor = $handler->handle($command);
+            return $this->render('@Twig_views/actor/showActor.html.twig', [
+                'base_dir' => realpath($this->getParameter('kernel.project_dir')).DIRECTORY_SEPARATOR,
+                'actor' => $actor
+            ]);
+
+        } catch (InvalidArgumentException $e) {
+            return new JsonResponse(['error' => $e->getMessage()], 400);
+        } catch (RepositoryException $e) {
+            return new JsonResponse(['error' => 'An application error has occurred'], 500);
         }
 
-        return $this->render('@Twig_views/actor/showActor.html.twig', [
-            'base_dir' => realpath($this->getParameter('kernel.project_dir')).DIRECTORY_SEPARATOR,
-            'actor' => $actor
-        ]);
     }
 }

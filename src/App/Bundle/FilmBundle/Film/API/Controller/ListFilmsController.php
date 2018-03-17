@@ -2,34 +2,36 @@
 
 namespace App\Bundle\FilmBundle\Film\API\Controller;
 
-use Doctrine\ORM\Query;
-use App\Component\Film\Domain\Film;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use App\Component\Film\Domain\Film;
+use App\Component\Film\Application\Command\Film\ReadFilmByIdCommand;
+use App\Component\Film\Domain\Exception\InvalidArgumentException;
+use App\Component\Film\Domain\Exception\RepositoryException;
 
 class ListFilmsController extends Controller
 {
-    public function findAll()
+    public function findAll(): JsonResponse
     {
-        $cache = $this->get('app.cacheservice');
+        $handler = $this->get('app.film.command_handler.read_all');
 
-        $hit = $cache->fetch('findAllFilmsViaAPI');
-        if(!$hit) {
-            $films = $this->getDoctrine()->getRepository('\App\Component\Film\Domain\Film')->findAll(Query::HYDRATE_ARRAY);
-            try{
-                $cache->store('findAllFilmsViaAPI', $films);
-            } catch (\Exception $e) {
-                echo $e->getMessage();
-            }
-        } else {
-            $films = $hit;
+        try {
+            $films = $handler->handle();
+
+            $filmsAsArray = array_map(function (Film $f) {
+                return $this->filmToArray($f);
+            }, $films);
+
+            return new JsonResponse(
+                $filmsAsArray,
+                200
+            );
+        } catch (InvalidArgumentException $e) {
+            return new JsonResponse(['error' => $e->getMessage()], 400);
+        } catch (RepositoryException $e) {
+            return new JsonResponse(['error' => 'An application error has occurred'], 500);
         }
-
-        $filmsAsArray = array_map(function (Film $f) {
-            return $this->filmToArray($f);
-        }, $films);
-        return new JsonResponse($filmsAsArray);
     }
 
     public function findById(Request $request)
@@ -37,24 +39,20 @@ class ListFilmsController extends Controller
         $json = json_decode($request->getContent(), true);
         $id = filter_var($json['id'] ?? '', FILTER_SANITIZE_NUMBER_INT);
 
-        $cache = $this->get('app.cacheservice');
+        $command = new ReadFilmByIdCommand($id);
+        $handler = $this->get('app.film.command_handler.read_by_id');
 
-        $hit = $cache->fetch('findOneFilmByIdViaAPI' . $id);
-        if(!$hit) {
-            $film[] = $this->getDoctrine()->getRepository('\App\Component\Film\Domain\Film')->findOneBy(['id' => $id]);
-            try{
-                $cache->store('findOneFilmByIdViaAPI' . $id, $film);
-            } catch (\Exception $e) {
-                echo $e->getMessage();
-            }
-        } else {
-            $film[] = $hit;
+        try {
+            $film = $handler->handle($command);
+            return new JsonResponse(
+                ['film' => $film->toArray()],
+                200
+            );
+        } catch (InvalidArgumentException $e) {
+            return new JsonResponse(['error' => $e->getMessage()], 400);
+        } catch (RepositoryException $e) {
+            return new JsonResponse(['error' => 'An application error has occurred'], 500);
         }
-
-        $filmsAsArray = array_map(function (Film $f) {
-            return $this->filmToArray($f);
-        }, $film);
-        return new JsonResponse($filmsAsArray);
     }
 
     private function filmToArray(Film $film)

@@ -3,31 +3,31 @@
 namespace App\Bundle\FilmBundle\Film\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
+use App\Component\Film\Domain\Film;
+use App\Component\Film\Application\Command\Film\ReadFilmByIdCommand;
+use App\Component\Film\Domain\Exception\InvalidArgumentException;
+use App\Component\Film\Domain\Exception\RepositoryException;
 
 class ShowFilmController extends Controller
 {
-    public function showFilmAction(int $id, Request $request)
+    public function showFilmAction(int $id)
     {
-        $cache = $this->get('app.cacheservice');
+        $filmId = filter_var($id ?? '', FILTER_SANITIZE_NUMBER_INT);
 
-        $hit = $cache->fetch('findOneFilmById' . $id . $request->getLocale());
-        if(!$hit) {
-            $film = $this->getDoctrine()->getRepository('\App\Component\Film\Domain\Film')->findOneBy(['id' => $id]);
-            try{
-                $cache->store('findOneFilmById' . $id . $request->getLocale(), $film);
-            } catch (\Exception $e) {
-                echo $e->getMessage();
-            }
-            $this->addFlash("fail", "Cache not hit");
-        } else {
-            $film = $hit;
-            $this->addFlash("success", "Cache hit");
+        $command = new ReadFilmByIdCommand($filmId);
+        $handler = $this->get('app.film.command_handler.read_by_id');
+
+        try {
+            $film = $handler->handle($command);
+            return $this->render('@Twig_views/film/showFilm.html.twig', [
+                'base_dir' => realpath($this->getParameter('kernel.project_dir')).DIRECTORY_SEPARATOR,
+                'film' => $film
+            ]);
+
+        } catch (InvalidArgumentException $e) {
+            return new JsonResponse(['error' => $e->getMessage()], 400);
+        } catch (RepositoryException $e) {
+            return new JsonResponse(['error' => 'An application error has occurred'], 500);
         }
-
-        return $this->render('@Twig_views/film/showFilm.html.twig', [
-            'base_dir' => realpath($this->getParameter('kernel.project_dir')).DIRECTORY_SEPARATOR,
-            'film' => $film
-        ]);
     }
 }

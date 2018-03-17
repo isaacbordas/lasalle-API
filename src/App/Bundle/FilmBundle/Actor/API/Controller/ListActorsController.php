@@ -2,59 +2,59 @@
 
 namespace App\Bundle\FilmBundle\Actor\API\Controller;
 
-use Doctrine\ORM\Query;
-use App\Component\Film\Domain\Actor;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use App\Component\Film\Domain\Actor;
+use App\Component\Film\Application\Command\Actor\ReadActorByIdCommand;
+use App\Component\Film\Domain\Exception\InvalidArgumentException;
+use App\Component\Film\Domain\Exception\RepositoryException;
 
 class ListActorsController extends Controller
 {
-    public function findAll()
+    public function findAll(): JsonResponse
     {
-        $cache = $this->get('app.cacheservice');
+        $handler = $this->get('app.actor.command_handler.read_all');
 
-        $hit = $cache->fetch('findAllActorsViaAPI');
-        if(!$hit) {
-            $actors = $this->getDoctrine()->getRepository('\App\Component\Film\Domain\Actor')->findAll(Query::HYDRATE_ARRAY);
-            try{
-                $cache->store('findAllActorsViaAPI', $actors);
-            } catch (\Exception $e) {
-                echo $e->getMessage();
-            }
-        } else {
-            $actors = $hit;
+        try {
+            $actors = $handler->handle();
+
+            $actorsAsArray = array_map(function (Actor $a) {
+                return $this->actorToArray($a);
+            }, $actors);
+
+            return new JsonResponse(
+                $actorsAsArray,
+                200
+            );
+        } catch (InvalidArgumentException $e) {
+            return new JsonResponse(['error' => $e->getMessage()], 400);
+        } catch (RepositoryException $e) {
+            return new JsonResponse(['error' => 'An application error has occurred'], 500);
         }
 
-        $actorsAsArray = array_map(function (Actor $a) {
-            return $this->actorToArray($a);
-        }, $actors);
-        return new JsonResponse($actorsAsArray, 200);
     }
 
-    public function findById(Request $request)
+    public function findById(Request $request): JsonResponse
     {
         $json = json_decode($request->getContent(), true);
         $id = filter_var($json['id'] ?? '', FILTER_SANITIZE_NUMBER_INT);
 
-        $cache = $this->get('app.cacheservice');
+        $command = new ReadActorByIdCommand($id);
+        $handler = $this->get('app.actor.command_handler.read_by_id');
 
-        $hit = $cache->fetch('findOneActorByIdViaAPI' . $id);
-        if(!$hit) {
-            $actor[] = $this->getDoctrine()->getRepository('\App\Component\Film\Domain\Actor')->findOneBy(['id' => $id]);
-            try{
-                $cache->store('findOneActorByIdViaAPI' . $id, $actor);
-            } catch (\Exception $e) {
-                echo $e->getMessage();
-            }
-        } else {
-            $actor[] = $hit;
+        try {
+            $actor = $handler->handle($command);
+            return new JsonResponse(
+                ['actor' => $actor->toArray()],
+                200
+            );
+        } catch (InvalidArgumentException $e) {
+            return new JsonResponse(['error' => $e->getMessage()], 400);
+        } catch (RepositoryException $e) {
+            return new JsonResponse(['error' => 'An application error has occurred'], 500);
         }
 
-        $actorsAsArray = array_map(function (Actor $a) {
-            return $this->actorToArray($a);
-        }, $actor);
-        return new JsonResponse($actorsAsArray, 200);
     }
 
     private function actorToArray(Actor $actor)
@@ -64,4 +64,5 @@ class ListActorsController extends Controller
             'name' => $actor->getName()
         ];
     }
+
 }

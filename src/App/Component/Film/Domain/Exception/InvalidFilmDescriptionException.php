@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Component\Film\Application\Exception;
+namespace App\Component\Film\Domain\Exception;
 
-class InvalidFilmNameException extends InvalidArgumentException
+class InvalidFilmDescriptionException extends InvalidArgumentException
 {
     public static function empty()
     {
         return new static("The film's name must be specified");
     }
-
 }

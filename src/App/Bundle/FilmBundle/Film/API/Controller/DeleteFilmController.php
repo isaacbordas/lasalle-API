@@ -5,7 +5,10 @@ namespace App\Bundle\FilmBundle\Film\API\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use App\Component\Film\Application\Exception\InvalidFilmIdException;
+use App\Component\Film\Domain\Film;
+use App\Component\Film\Application\Command\Film\DeleteFilmCommand;
+use App\Component\Film\Domain\Exception\InvalidArgumentException;
+use App\Component\Film\Domain\Exception\RepositoryException;
 
 class DeleteFilmController extends Controller
 {
@@ -14,12 +17,20 @@ class DeleteFilmController extends Controller
         $json = json_decode($request->getContent(), true);
         $id = filter_var($json['id'] ?? '', FILTER_SANITIZE_NUMBER_INT);
 
+        $command = new DeleteFilmCommand($id);
+        $handler = $this->get('app.film.command_handler.delete');
+
         try {
-            $deleteFilmUseCase = $this->get('app.film.usecase.delete');
-            $deleteFilmUseCase->execute($id);
-            return new JsonResponse('', 204);
-        } catch (InvalidFilmIdException $e) {
+            $handler->handle($command);
+            $this->get('doctrine.orm.default_entity_manager')->flush();
+            return new JsonResponse(
+                '',
+                204
+            );
+        } catch (InvalidArgumentException $e) {
             return new JsonResponse(['error' => $e->getMessage()], 400);
+        } catch (RepositoryException $e) {
+            return new JsonResponse(['error' => 'An application error has occurred'], 500);
         }
     }
 }

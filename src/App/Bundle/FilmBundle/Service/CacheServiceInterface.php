@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Component\Film\Application\Service;
+namespace App\Bundle\FilmBundle\Service;
 
-interface CacheService {
+interface CacheServiceInterface {
     
     public function store(string $key, $data) : void;
     

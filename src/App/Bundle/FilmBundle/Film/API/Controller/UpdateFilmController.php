@@ -5,7 +5,10 @@ namespace App\Bundle\FilmBundle\Film\API\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use App\Component\Film\Application\Exception\InvalidFilmNameException;
+use App\Component\Film\Application\Command\Film\UpdateFilmCommand;
+use App\Component\Film\Domain\Film;
+use App\Component\Film\Domain\Exception\InvalidArgumentException;
+use App\Component\Film\Domain\Exception\RepositoryException;
 
 class UpdateFilmController extends Controller
 {
@@ -15,15 +18,22 @@ class UpdateFilmController extends Controller
         $name = filter_var($json['name'] ?? '', FILTER_SANITIZE_STRING);
         $description = filter_var($json['description'] ?? '', FILTER_SANITIZE_STRING);
         $actorId = filter_var($json['actorId'] ?? '', FILTER_SANITIZE_NUMBER_INT);
+        $filmId = filter_var($id ?? '', FILTER_SANITIZE_NUMBER_INT);
 
-        $film = $this->getDoctrine()->getRepository('\App\Component\Film\Domain\Film')->findOneBy(['id' => $id]);
+        $command = new UpdateFilmCommand($name, $description, $actorId, $filmId);
+        $handler = $this->get('app.film.command_handler.update');
 
         try {
-            $updateFilmUseCase = $this->get('app.film.usecase.update');
-            $updateFilmUseCase->execute($name, $description, $actorId, $film);
-            return new JsonResponse(['result' => 'Film updated'], 200);
-        } catch (InvalidFilmNameException $e) {
+            $film = $handler->handle($command);
+            $this->get('doctrine.orm.default_entity_manager')->flush();
+            return new JsonResponse(
+                ['success' => 'Film correctly updated', 'film' => $film->toArray()],
+                200
+            );
+        } catch (InvalidArgumentException $e) {
             return new JsonResponse(['error' => $e->getMessage()], 400);
+        } catch (RepositoryException $e) {
+            return new JsonResponse(['error' => 'An application error has occurred'], 500);
         }
     }
 }

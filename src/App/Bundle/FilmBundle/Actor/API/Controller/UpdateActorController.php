@@ -5,23 +5,33 @@ namespace App\Bundle\FilmBundle\Actor\API\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use App\Component\Film\Application\Exception\InvalidActorNameException;
+use App\Component\Film\Domain\Actor;
+use App\Component\Film\Application\Command\Actor\UpdateActorCommand;
+use App\Component\Film\Domain\Exception\InvalidArgumentException;
+use App\Component\Film\Domain\Exception\RepositoryException;
 
 class UpdateActorController extends Controller
 {
-    public function execute(Request $request, $id)
+    public function execute(Request $request, $id): JsonResponse
     {
         $json = json_decode($request->getContent(), true);
         $name = filter_var($json['name'] ?? '', FILTER_SANITIZE_STRING);
 
-        $actor = $this->getDoctrine()->getRepository('\App\Component\Film\Domain\Actor')->findOneBy(['id' => $id]);
+        $command = new UpdateActorCommand($name, $id);
+        $handler = $this->get('app.actor.command_handler.update');
 
         try {
-            $updateActorUseCase = $this->get('app.actor.usecase.update');
-            $updateActorUseCase->execute($name, $actor);
-            return new JsonResponse(['result' => 'Actor updated'], 200);
-        } catch (InvalidActorNameException $e) {
+            $actor = $handler->handle($command);
+            $this->get('doctrine.orm.default_entity_manager')->flush();
+            return new JsonResponse(
+                ['success' => 'Actor correctly updated', 'actor' => $actor->toArray()],
+                200
+            );
+        } catch (InvalidArgumentException $e) {
             return new JsonResponse(['error' => $e->getMessage()], 400);
+        } catch (RepositoryException $e) {
+            return new JsonResponse(['error' => 'An application error has occurred'], 500);
         }
+
     }
 }

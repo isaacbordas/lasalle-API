@@ -3,58 +3,10 @@ services:
       - class: App\Bundle\FilmBundle\EventSubscriber\LocaleSubscriber
       - arguments: ['%kernel.default_locale%']
 
-    app.film.actor.metadata:
-      class: Doctrine\ORM\Mapping\ClassMetadata
-      arguments: [ App\Component\Film\Domain\Actor ]
-
-    app.film.repository.actor:
-     class: App\Bundle\FilmBundle\Actor\Repository\ActorRepository
-     arguments:
-       - '@doctrine.orm.entity_manager'
-       - '@app.film.actor.metadata'
-
     app.cacheservice:
       class: App\Bundle\FilmBundle\Service\CacheService
       arguments:
         $filecachepath: '%filecachepath%'
-
-    app.film.usecase.delete:
-      class: App\Component\Film\Application\UseCase\Film\DeleteFilmUseCase
-      arguments:
-        - '@doctrine.orm.entity_manager'
-        - '@event_dispatcher'
-
-    app.film.usecase.create:
-      class: App\Component\Film\Application\UseCase\Film\CreateFilmUseCase
-      arguments:
-        - '@app.film.repository.actor'
-        - '@doctrine.orm.entity_manager'
-        - '@event_dispatcher'
-
-    app.film.usecase.update:
-      class: App\Component\Film\Application\UseCase\Film\UpdateFilmUseCase
-      arguments:
-         - '@app.film.repository.actor'
-         - '@doctrine.orm.entity_manager'
-         - '@event_dispatcher'
-
-    app.actor.usecase.create:
-      class: App\Component\Film\Application\UseCase\Actor\CreateActorUseCase
-      arguments:
-        - '@doctrine.orm.entity_manager'
-        - '@event_dispatcher'
-
-    app.actor.usecase.update:
-      class: App\Component\Film\Application\UseCase\Actor\UpdateActorUseCase
-      arguments:
-        - '@doctrine.orm.entity_manager'
-        - '@event_dispatcher'
-
-    app.actor.usecase.delete:
-      class: App\Component\Film\Application\UseCase\Actor\DeleteActorUseCase
-      arguments:
-        - '@doctrine.orm.entity_manager'
-        - '@event_dispatcher'
 
     app.service.deletecache:
       class: App\Bundle\FilmBundle\Service\CacheService
@@ -62,3 +14,77 @@ services:
         $filecachepath: '%filecachepath%'
       tags:
         - { name: kernel.event_listener, event: deletecache }
+
+    app.actor.repository:
+        class: App\Bundle\FilmBundle\Actor\Repository\MySqlActorRepository
+        public: false
+        arguments:
+          - "@doctrine.orm.default_entity_manager"
+
+    app.film.repository:
+        class: App\Bundle\FilmBundle\Film\Repository\MySqlFilmRepository
+        public: false
+        arguments:
+          - "@doctrine.orm.default_entity_manager"
+
+    app.film.command_handler.read_by_id:
+      class: App\Component\Film\Application\CommandHandler\Film\ReadFilmByIdHandler
+      public: true
+      arguments:
+        - '@app.film.repository'
+
+    app.film.command_handler.read_all:
+      class: App\Component\Film\Application\CommandHandler\Film\ReadFilmAllHandler
+      public: true
+      arguments:
+        - '@app.film.repository'
+
+    app.film.command_handler.delete:
+      class: App\Component\Film\Application\CommandHandler\Film\DeleteFilmHandler
+      public: true
+      arguments:
+        - '@app.film.repository'
+
+    app.film.command_handler.create:
+      class: App\Component\Film\Application\CommandHandler\Film\CreateFilmHandler
+      public: true
+      arguments:
+        - '@app.film.repository'
+        - '@app.actor.repository'
+
+    app.film.command_handler.update:
+      class: App\Component\Film\Application\CommandHandler\Film\UpdateFilmHandler
+      public: true
+      arguments:
+        - '@app.film.repository'
+        - '@app.actor.repository'
+
+    app.actor.command_handler.read_by_id:
+      class: App\Component\Film\Application\CommandHandler\Actor\ReadActorByIdHandler
+      public: true
+      arguments:
+        - '@app.actor.repository'
+
+    app.actor.command_handler.read_all:
+      class: App\Component\Film\Application\CommandHandler\Actor\ReadActorAllHandler
+      public: true
+      arguments:
+        - '@app.actor.repository'
+
+    app.actor.command_handler.create:
+      class: App\Component\Film\Application\CommandHandler\Actor\CreateActorHandler
+      public: true
+      arguments:
+        - '@app.actor.repository'
+
+    app.actor.command_handler.update:
+      class: App\Component\Film\Application\CommandHandler\Actor\UpdateActorHandler
+      public: true
+      arguments:
+        - '@app.actor.repository'
+
+    app.actor.command_handler.delete:
+      class: App\Component\Film\Application\CommandHandler\Actor\DeleteActorHandler
+      public: true
+      arguments:
+        - '@app.actor.repository'

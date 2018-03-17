@@ -65,9 +65,3 @@ showActor:
   path: /{_locale}/showActor/{id}/
   defaults: { _controller: \App\Bundle\FilmBundle\Actor\Controller\ShowActorController::showActorAction }
   methods: [GET]
-
-clearCache:
-  path: /{_locale}/clearCache/
-  defaults: { _controller: \App\Bundle\FilmBundle\Film\Controller\ClearCacheController::execute }
-
-
