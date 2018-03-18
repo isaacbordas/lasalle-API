@@ -64,6 +64,7 @@ final class CachedActorRepository implements ActorRepository
    public function save(Actor $actor): void
    {
        $this->actorRepository->save($actor);
+       $this->dispatcher->dispatch(DeleteCache::TOPIC, new DeleteCache((string) 'AllActors'));
    }
 
    public function update(Actor $actor): void

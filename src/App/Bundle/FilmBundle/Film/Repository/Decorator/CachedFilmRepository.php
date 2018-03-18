@@ -64,6 +64,7 @@ final class CachedFilmRepository implements FilmRepository
     public function save(Film $film): void
     {
         $this->filmRepository->save($film);
+        $this->dispatcher->dispatch(DeleteCache::TOPIC, new DeleteCache((string) 'AllFilms'));
     }
 
     public function update(Film $film): void
