@@ -1,46 +1,52 @@
 services:
-    App\Bundle\FilmBundle\EventSubscriber\LocaleSubscriber:
-      - class: App\Bundle\FilmBundle\EventSubscriber\LocaleSubscriber
-      - arguments: ['%kernel.default_locale%']
+  App\Bundle\FilmBundle\EventSubscriber\LocaleSubscriber:
+    - class: App\Bundle\FilmBundle\EventSubscriber\LocaleSubscriber
+    - arguments: ['%kernel.default_locale%']
 
-    app.cacheservice:
-      class: App\Bundle\FilmBundle\Service\CacheService
-      arguments:
-        $filecachepath: '%filecachepath%'
+  app.cacheservice:
+    class: App\Bundle\FilmBundle\Services\Cache\CacheService
+    arguments:
+      $filecachepath: '%filecachepath%'
 
-    app.service.deletecache:
-      class: App\Bundle\FilmBundle\Service\CacheService
-      arguments:
-        $filecachepath: '%filecachepath%'
-      tags:
-        - { name: kernel.event_listener, event: deletecache }
+  app.service.deletecache:
+    class: App\Bundle\FilmBundle\Services\Cache\CacheService
+    arguments:
+      $filecachepath: '%filecachepath%'
+    tags:
+      - { name: kernel.event_listener, event: deletecache }
 
-    app.actor.repository:
-      class: App\Bundle\FilmBundle\Actor\Repository\MySqlActorRepository
+  App\Bundle\FilmBundle\Services\Cache\Command\ClearCacheCLICommand:
+    arguments:
+      - '@app.cacheservice'
+    tags:
+      - { name: 'console.command', command: 'app:clear-cache'}
+
+  app.actor.repository:
+    class: App\Bundle\FilmBundle\Actor\Repository\MySqlActorRepository
+    public: false
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+
+  app.actor.repository.cached:
+    class: App\Bundle\FilmBundle\Actor\Repository\Decorator\CachedActorRepository
+    public: false
+    decorates: 'app.actor.repository'
+    arguments:
+      - '@app.actor.repository.cached.inner'
+      - '@app.cacheservice'
+      - '@event_dispatcher'
+
+  app.film.repository:
+      class: App\Bundle\FilmBundle\Film\Repository\MySqlFilmRepository
       public: false
       arguments:
         - "@doctrine.orm.default_entity_manager"
 
-    app.actor.repository.cached:
-      class: App\Bundle\FilmBundle\Actor\Repository\Decorator\CachedActorRepository
-      public: false
-      decorates: 'app.actor.repository'
-      arguments:
-        - '@app.actor.repository.cached.inner'
-        - '@app.cacheservice'
-        - '@event_dispatcher'
-
-    app.film.repository:
-        class: App\Bundle\FilmBundle\Film\Repository\MySqlFilmRepository
-        public: false
-        arguments:
-          - "@doctrine.orm.default_entity_manager"
-
-    app.film.repository.cached:
-      class: App\Bundle\FilmBundle\Film\Repository\Decorator\CachedFilmRepository
-      public: false
-      decorates: 'app.film.repository'
-      arguments:
-        - '@app.film.repository.cached.inner'
-        - '@app.cacheservice'
-        - '@event_dispatcher'
+  app.film.repository.cached:
+    class: App\Bundle\FilmBundle\Film\Repository\Decorator\CachedFilmRepository
+    public: false
+    decorates: 'app.film.repository'
+    arguments:
+      - '@app.film.repository.cached.inner'
+      - '@app.cacheservice'
+      - '@event_dispatcher'

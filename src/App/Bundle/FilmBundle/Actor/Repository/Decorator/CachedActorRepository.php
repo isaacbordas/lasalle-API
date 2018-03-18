@@ -4,7 +4,7 @@ namespace App\Bundle\FilmBundle\Actor\Repository\Decorator;
 
 use App\Component\Film\Domain\Actor;
 use App\Component\Film\Domain\Repository\ActorRepository;
-use App\Bundle\FilmBundle\Service\CacheService;
+use App\Bundle\FilmBundle\Services\Cache\CacheService;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use App\Bundle\FilmBundle\EventSubscriber\DeleteCache;
 

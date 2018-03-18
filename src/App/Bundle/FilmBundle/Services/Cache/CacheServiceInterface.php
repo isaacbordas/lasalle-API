@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Bundle\FilmBundle\Service;
+namespace App\Bundle\FilmBundle\Services\Cache;
 
 interface CacheServiceInterface {
     
@@ -10,6 +10,8 @@ interface CacheServiceInterface {
     
     public function fetch(string $key);
     
-    public function cacheClear(string $key): void;
-    
+    public function deleteKey(string $key): void;
+
+    public function clearCache(): void;
+
 }
