@@ -107,10 +107,18 @@ services:
       arguments:
         - '@app.actor.repository'
 
-    App\Bundle\FilmBundle\Actor\CLI\Command\CreateActorCommand:
+    App\Bundle\FilmBundle\Actor\CLI\Command\CreateActorCLICommand:
       arguments:
         - '@app.actor.command_handler.create'
         - '@app.actor.repository'
         - '@doctrine.orm.default_entity_manager'
       tags:
         - { name: 'console.command', command: 'app:create-actor'}
+
+    App\Bundle\FilmBundle\Actor\CLI\Command\DeleteActorCLICommand:
+          arguments:
+            - '@app.actor.command_handler.delete'
+            - '@app.actor.repository'
+            - '@doctrine.orm.default_entity_manager'
+          tags:
+            - { name: 'console.command', command: 'app:delete-actor'}

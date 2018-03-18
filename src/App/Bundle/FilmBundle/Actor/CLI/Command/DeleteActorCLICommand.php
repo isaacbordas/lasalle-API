@@ -7,20 +7,20 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use App\Component\Film\Application\Command\Actor\CreateActorCommand as CreateActor;
-use App\Component\Film\Application\CommandHandler\Actor\CreateActorHandler;
+use App\Component\Film\Application\Command\Actor\DeleteActorCommand;
+use App\Component\Film\Application\CommandHandler\Actor\DeleteActorHandler;
 use App\Component\Film\Domain\Repository\ActorRepository;
 
-class CreateActorCommand extends Command
+class DeleteActorCLICommand extends Command
 {
-    protected static $defaultName = 'app:create-actor';
-    private $createactor;
+    protected static $defaultName = 'app:delete-actor';
+    private $deleteActor;
     private $actorRepository;
     private $entityManager;
 
-    public function __construct(CreateActorHandler $createactor, ActorRepository $actorRepository, EntityManager $entityManager)
+    public function __construct(DeleteActorHandler $deleteActor, ActorRepository $actorRepository, EntityManager $entityManager)
     {
-        $this->createactor = $createactor;
+        $this->deleteActor = $deleteActor;
         $this->actorRepository = $actorRepository;
         $this->entityManager = $entityManager;
 
@@ -30,37 +30,36 @@ class CreateActorCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('app:create-actor')
-            ->setDescription('Creates a new actor.')
-            ->setHelp('This command allows you to create a actor...')
-            ->addArgument('name', InputArgument::REQUIRED, 'Actor name')
+            ->setName('app:delete-actor')
+            ->setDescription('Deletes a actor.')
+            ->setHelp('This command allows you to delete a actor...')
+            ->addArgument('actorId', InputArgument::REQUIRED, 'Actor ID')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $name = $input->getArgument('name');
+        $actorId = $input->getArgument('actorId');
 
-        $command = new CreateActor($name);
+        $command = new DeleteActorCommand($actorId);
 
         try {
-            $actor = $this->createactor->handle($command);
-            $this->actorRepository->save($actor);
+            $actor = $this->deleteActor->handle($command);
             $this->entityManager->flush();
             $output->writeln([
-                'Actor Creator',
+                'Actor Delete',
                 '============',
-                $name,
+                'Deleted ' . $actor->getName(),
             ]);
         } catch (InvalidArgumentException $e) {
             $output->writeln([
-                'Actor Creator',
+                'Actor Delete',
                 '============',
                 'Error: ' . $e->getMessage(),
             ]);
         } catch (RepositoryException $e) {
             $output->writeln([
-                'Actor Creator',
+                'Actor Delete',
                 '============',
                 'Error: An application error has occurred',
             ]);
