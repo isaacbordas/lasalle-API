@@ -4,6 +4,7 @@ namespace App\Bundle\FilmBundle\Service;
 
 use App\Bundle\FilmBundle\EventSubscriber\DeleteCache;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Exception;
 
 class CacheService extends Controller implements CacheServiceInterface
 {
@@ -14,7 +15,7 @@ class CacheService extends Controller implements CacheServiceInterface
         $this->filecachepath = $filecachepath;
     }
 
-    public function store(string $key, $data) : void
+    public function save(string $key, $data): void
     {
         $handler = fopen($this->getFileName($key),'w');
         if (!$handler) {
@@ -29,7 +30,7 @@ class CacheService extends Controller implements CacheServiceInterface
         fclose($handler);
     }
 
-    public function getFileName(string $key) : string
+    public function getFileName(string $key): string
     {
        $path = $this->filecachepath;
         if(!is_dir($path)) {
@@ -57,7 +58,7 @@ class CacheService extends Controller implements CacheServiceInterface
         return $unserializedobject;
     }
 
-    public function cacheClear() : void
+    public function cacheClear(string $key): void
     {
         $cachedir = $this->filecachepath;
 

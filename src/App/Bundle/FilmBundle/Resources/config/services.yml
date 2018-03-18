@@ -21,11 +21,27 @@ services:
         arguments:
           - "@doctrine.orm.default_entity_manager"
 
+    app.actor.repository.cached:
+        class: App\Bundle\FilmBundle\Actor\Repository\Decorator\CachedActorRepository
+        public: false
+        decorates: 'app.actor.repository'
+        arguments:
+          - '@app.actor.repository.cached.inner'
+          - '@app.cacheservice'
+
     app.film.repository:
         class: App\Bundle\FilmBundle\Film\Repository\MySqlFilmRepository
         public: false
         arguments:
           - "@doctrine.orm.default_entity_manager"
+
+    app.film.repository.cached:
+      class: App\Bundle\FilmBundle\Film\Repository\Decorator\CachedFilmRepository
+      public: false
+      decorates: 'app.film.repository'
+      arguments:
+        - '@app.film.repository.cached.inner'
+        - '@app.cacheservice'
 
     app.film.command_handler.read_by_id:
       class: App\Component\Film\Application\CommandHandler\Film\ReadFilmByIdHandler
