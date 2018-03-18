@@ -17,7 +17,7 @@ class UpdateActorHandler
 
     public function handle(UpdateActorCommand $command): Actor
     {
-        $actor = $this->actorRepository->findById($command->actorId());
+        $actor = $this->actorRepository->findById($command->actorId(), false);
         $actor->setName($command->name());
         $this->actorRepository->update($actor);
 

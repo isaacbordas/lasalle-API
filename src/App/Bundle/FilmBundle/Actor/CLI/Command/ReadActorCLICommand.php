@@ -7,7 +7,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use App\Component\Film\Application\Command\Actor\ReadActorAllCommand;
 use App\Component\Film\Application\CommandHandler\Actor\ReadActorAllHandler;
 use App\Component\Film\Application\Command\Actor\ReadActorByIdCommand;
 use App\Component\Film\Application\CommandHandler\Actor\ReadActorByIdHandler;
@@ -72,7 +71,6 @@ class ReadActorCLICommand extends Command
             }
         } else {
             try {
-                $text = '';
                 $actors = $this->readActorAll->handle();
                 $actorsAsArray = array_map(function (Actor $a) {
                     return $this->actorToArray($a);
@@ -87,8 +85,6 @@ class ReadActorCLICommand extends Command
                 foreach ($actorsAsArray as $actor):
                     $output->writeln('ID: ' . $actor['id'] . ' - Name: ' . $actor['name']);
                 endforeach;
-
-
 
             } catch (InvalidArgumentException $e) {
                 $output->writeln([

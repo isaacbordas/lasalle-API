@@ -21,20 +21,24 @@ final class CachedActorRepository implements ActorRepository
        $this->dispatcher = $dispatcher;
    }
 
-   public function findById(int $actorId): Actor
+   public function findById(int $actorId, bool $cache = true): Actor
    {
-       $item = $this->cache->fetch((string) 'Actor' . $actorId);
-
-       if (!$item) {
+       if ($cache == false) {
            $item = $this->actorRepository->findById($actorId);
+       } else {
+           $item = $this->cache->fetch((string)'Actor' . $actorId);
 
-           $this->cache->save((string) 'Actor' . $actorId, $item);
+           if (!$item) {
+               $item = $this->actorRepository->findById($actorId);
+
+               $this->cache->save((string)'Actor' . $actorId, $item);
+           }
        }
 
        return $item;
    }
 
-    public function findAllOrderedByName()
+    public function findAllOrderedByName(bool $cache = true)
     {
         $item = $this->cache->fetch((string) 'AllActors');
 

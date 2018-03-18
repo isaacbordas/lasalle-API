@@ -1,0 +1,66 @@
+services:
+
+  app.film.command_handler.read_by_id:
+    class: App\Component\Film\Application\CommandHandler\Film\ReadFilmByIdHandler
+    public: true
+    arguments:
+      - '@app.film.repository'
+
+  app.film.command_handler.read_all:
+    class: App\Component\Film\Application\CommandHandler\Film\ReadFilmAllHandler
+    public: true
+    arguments:
+      - '@app.film.repository'
+
+  app.film.command_handler.delete:
+    class: App\Component\Film\Application\CommandHandler\Film\DeleteFilmHandler
+    public: true
+    arguments:
+      - '@app.film.repository'
+
+  app.film.command_handler.create:
+    class: App\Component\Film\Application\CommandHandler\Film\CreateFilmHandler
+    public: true
+    arguments:
+      - '@app.film.repository'
+      - '@app.actor.repository'
+
+  app.film.command_handler.update:
+    class: App\Component\Film\Application\CommandHandler\Film\UpdateFilmHandler
+    public: true
+    arguments:
+      - '@app.film.repository'
+      - '@app.actor.repository'
+
+  App\Bundle\FilmBundle\Film\CLI\Command\DeleteFilmCLICommand:
+    arguments:
+      - '@app.film.command_handler.delete'
+      - '@app.film.repository'
+      - '@doctrine.orm.default_entity_manager'
+    tags:
+      - { name: 'console.command', command: 'app:delete-film'}
+
+  App\Bundle\FilmBundle\Film\CLI\Command\CreateFilmCLICommand:
+    arguments:
+      - '@app.film.command_handler.create'
+      - '@app.film.repository'
+      - '@doctrine.orm.default_entity_manager'
+    tags:
+      - { name: 'console.command', command: 'app:create-film'}
+
+  App\Bundle\FilmBundle\Film\CLI\Command\UpdateFilmCLICommand:
+    arguments:
+      - '@app.film.command_handler.update'
+      - '@app.film.repository'
+      - '@doctrine.orm.default_entity_manager'
+    tags:
+      - { name: 'console.command', command: 'app:update-film'}
+
+  App\Bundle\FilmBundle\Film\CLI\Command\ReadFilmCLICommand:
+    arguments:
+      - '@app.film.command_handler.read_all'
+      - '@app.film.command_handler.read_by_id'
+      - '@app.film.repository'
+      - '@doctrine.orm.default_entity_manager'
+    tags:
+      - { name: 'console.command', command: 'app:list-film'}

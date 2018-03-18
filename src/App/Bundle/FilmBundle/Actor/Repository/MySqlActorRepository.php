@@ -42,7 +42,7 @@ class MySqlActorRepository implements ActorRepository
         }
     }
 
-    public function findById(int $actorId): Actor
+    public function findById(int $actorId, bool $cache = false): Actor
     {
         $actor = $this->em
             ->getRepository('FilmBundle:Actor')
@@ -52,7 +52,7 @@ class MySqlActorRepository implements ActorRepository
         }
         return $actor[0];
     }
-    public function findAllOrderedByName():array
+    public function findAllOrderedByName(bool $cache = false): array
     {
         try {
             return $this->em

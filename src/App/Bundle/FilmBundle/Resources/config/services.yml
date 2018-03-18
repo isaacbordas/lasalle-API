@@ -16,19 +16,19 @@ services:
         - { name: kernel.event_listener, event: deletecache }
 
     app.actor.repository:
-        class: App\Bundle\FilmBundle\Actor\Repository\MySqlActorRepository
-        public: false
-        arguments:
-          - "@doctrine.orm.default_entity_manager"
+      class: App\Bundle\FilmBundle\Actor\Repository\MySqlActorRepository
+      public: false
+      arguments:
+        - "@doctrine.orm.default_entity_manager"
 
     app.actor.repository.cached:
-        class: App\Bundle\FilmBundle\Actor\Repository\Decorator\CachedActorRepository
-        public: false
-        decorates: 'app.actor.repository'
-        arguments:
-          - '@app.actor.repository.cached.inner'
-          - '@app.cacheservice'
-          - '@event_dispatcher'
+      class: App\Bundle\FilmBundle\Actor\Repository\Decorator\CachedActorRepository
+      public: false
+      decorates: 'app.actor.repository'
+      arguments:
+        - '@app.actor.repository.cached.inner'
+        - '@app.cacheservice'
+        - '@event_dispatcher'
 
     app.film.repository:
         class: App\Bundle\FilmBundle\Film\Repository\MySqlFilmRepository
@@ -44,98 +44,3 @@ services:
         - '@app.film.repository.cached.inner'
         - '@app.cacheservice'
         - '@event_dispatcher'
-
-    app.film.command_handler.read_by_id:
-      class: App\Component\Film\Application\CommandHandler\Film\ReadFilmByIdHandler
-      public: true
-      arguments:
-        - '@app.film.repository'
-
-    app.film.command_handler.read_all:
-      class: App\Component\Film\Application\CommandHandler\Film\ReadFilmAllHandler
-      public: true
-      arguments:
-        - '@app.film.repository'
-
-    app.film.command_handler.delete:
-      class: App\Component\Film\Application\CommandHandler\Film\DeleteFilmHandler
-      public: true
-      arguments:
-        - '@app.film.repository'
-
-    app.film.command_handler.create:
-      class: App\Component\Film\Application\CommandHandler\Film\CreateFilmHandler
-      public: true
-      arguments:
-        - '@app.film.repository'
-        - '@app.actor.repository'
-
-    app.film.command_handler.update:
-      class: App\Component\Film\Application\CommandHandler\Film\UpdateFilmHandler
-      public: true
-      arguments:
-        - '@app.film.repository'
-        - '@app.actor.repository'
-
-    app.actor.command_handler.read_by_id:
-      class: App\Component\Film\Application\CommandHandler\Actor\ReadActorByIdHandler
-      public: true
-      arguments:
-        - '@app.actor.repository'
-
-    app.actor.command_handler.read_all:
-      class: App\Component\Film\Application\CommandHandler\Actor\ReadActorAllHandler
-      public: true
-      arguments:
-        - '@app.actor.repository'
-
-    app.actor.command_handler.create:
-      class: App\Component\Film\Application\CommandHandler\Actor\CreateActorHandler
-      public: true
-      arguments:
-        - '@app.actor.repository'
-
-    app.actor.command_handler.update:
-      class: App\Component\Film\Application\CommandHandler\Actor\UpdateActorHandler
-      public: true
-      arguments:
-        - '@app.actor.repository'
-
-    app.actor.command_handler.delete:
-      class: App\Component\Film\Application\CommandHandler\Actor\DeleteActorHandler
-      public: true
-      arguments:
-        - '@app.actor.repository'
-
-    App\Bundle\FilmBundle\Actor\CLI\Command\CreateActorCLICommand:
-      arguments:
-        - '@app.actor.command_handler.create'
-        - '@app.actor.repository'
-        - '@doctrine.orm.default_entity_manager'
-      tags:
-        - { name: 'console.command', command: 'app:create-actor'}
-
-    App\Bundle\FilmBundle\Actor\CLI\Command\DeleteActorCLICommand:
-      arguments:
-        - '@app.actor.command_handler.delete'
-        - '@app.actor.repository'
-        - '@doctrine.orm.default_entity_manager'
-      tags:
-        - { name: 'console.command', command: 'app:delete-actor'}
-
-    App\Bundle\FilmBundle\Actor\CLI\Command\UpdateActorCLICommand:
-      arguments:
-        - '@app.actor.command_handler.update'
-        - '@app.actor.repository'
-        - '@doctrine.orm.default_entity_manager'
-      tags:
-        - { name: 'console.command', command: 'app:update-actor'}
-
-    App\Bundle\FilmBundle\Actor\CLI\Command\ReadActorCLICommand:
-      arguments:
-        - '@app.actor.command_handler.read_all'
-        - '@app.actor.command_handler.read_by_id'
-        - '@app.actor.repository'
-        - '@doctrine.orm.default_entity_manager'
-      tags:
-        - { name: 'console.command', command: 'app:list-actor'}

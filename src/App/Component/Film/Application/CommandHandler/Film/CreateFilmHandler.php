@@ -21,7 +21,7 @@ class CreateFilmHandler
     public function handle(CreateFilmCommand $command): Film
     {
 
-        $actor = $this->actorRepository->findById($command->actorId());
+        $actor = $this->actorRepository->findById($command->actorId(), false);
 
         $film = new Film($command->name(), $command->description(), $actor);
         $this->filmRepository->save($film);

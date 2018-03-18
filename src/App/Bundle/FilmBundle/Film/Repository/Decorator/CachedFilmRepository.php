@@ -21,20 +21,24 @@ final class CachedFilmRepository implements FilmRepository
         $this->dispatcher = $dispatcher;
     }
 
-    public function findById(int $filmId): Film
+    public function findById(int $filmId, bool $cache = true): Film
     {
-        $item = $this->cache->fetch((string) 'Film' . $filmId);
-
-        if (!$item) {
+        if($cache == false){
             $item = $this->filmRepository->findById($filmId);
+        }else {
+            $item = $this->cache->fetch((string)'Film' . $filmId);
 
-            $this->cache->save((string) 'Film' . $filmId, $item);
+            if (!$item) {
+                $item = $this->filmRepository->findById($filmId);
+
+                $this->cache->save((string)'Film' . $filmId, $item);
+            }
         }
 
         return $item;
     }
 
-    public function findAllOrderedByName()
+    public function findAllOrderedByName(bool $cache = true)
     {
         $item = $this->cache->fetch((string) 'AllFilms');
 

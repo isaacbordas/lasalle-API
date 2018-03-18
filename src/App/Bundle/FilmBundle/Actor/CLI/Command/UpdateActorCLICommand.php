@@ -30,9 +30,9 @@ class UpdateActorCLICommand extends Command
     protected function configure()
     {
         $this
-            ->setName('app:create-actor')
-            ->setDescription('Creates a new actor.')
-            ->setHelp('This command allows you to create a actor...')
+            ->setName('app:update-actor')
+            ->setDescription('Updates a new actor.')
+            ->setHelp('This command allows you to update a actor...')
             ->addArgument('name', InputArgument::REQUIRED, 'Actor name')
             ->addArgument('actorId', InputArgument::REQUIRED, 'Actor ID')
         ;

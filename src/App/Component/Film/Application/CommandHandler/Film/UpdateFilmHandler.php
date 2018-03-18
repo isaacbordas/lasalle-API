@@ -20,9 +20,9 @@ class UpdateFilmHandler
 
     public function handle(UpdateFilmCommand $command): Film
     {
-        $actor = $this->actorRepository->findById($command->actorId());
+        $actor = $this->actorRepository->findById($command->actorId(), false);
 
-        $film = $this->filmRepository->findById($command->filmId());
+        $film = $this->filmRepository->findById($command->filmId(), false);
 
         if(!empty($command->name())) $film->setName($command->name());
         if(!empty($command->description())) $film->setDescription($command->description());

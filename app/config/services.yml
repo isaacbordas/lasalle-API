@@ -8,3 +8,5 @@ services:
 
 imports:
     - { resource: '@FilmBundle/FilmBundle/Resources/config/services.yml' }
+    - { resource: '@FilmBundle/FilmBundle/Resources/config/actor_services.yml' }
+    - { resource: '@FilmBundle/FilmBundle/Resources/config/film_services.yml' }

@@ -42,7 +42,7 @@ class MySqlFilmRepository implements FilmRepository
         }
     }
 
-    public function findById(int $filmId): Film
+    public function findById(int $filmId, bool $cache = false): Film
     {
         $film = $this->em
             ->getRepository('FilmBundle:Film')
@@ -52,7 +52,7 @@ class MySqlFilmRepository implements FilmRepository
         }
         return $film[0];
     }
-    public function findAllOrderedByName():array
+    public function findAllOrderedByName(bool $cache = false): array
     {
         try {
             return $this->em
