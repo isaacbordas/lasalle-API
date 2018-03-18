@@ -7,20 +7,20 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use App\Component\Film\Application\Command\Actor\CreateActorCommand;
-use App\Component\Film\Application\CommandHandler\Actor\CreateActorHandler;
+use App\Component\Film\Application\Command\Actor\UpdateActorCommand;
+use App\Component\Film\Application\CommandHandler\Actor\UpdateActorHandler;
 use App\Component\Film\Domain\Repository\ActorRepository;
 
-class CreateActorCLICommand extends Command
+class UpdateActorCLICommand extends Command
 {
-    protected static $defaultName = 'app:create-actor';
-    private $createActor;
+    protected static $defaultName = 'app:update-actor';
+    private $updateActor;
     private $actorRepository;
     private $entityManager;
 
-    public function __construct(CreateActorHandler $createActor, ActorRepository $actorRepository, EntityManager $entityManager)
+    public function __construct(UpdateActorHandler $updateActor, ActorRepository $actorRepository, EntityManager $entityManager)
     {
-        $this->createActor = $createActor;
+        $this->updateActor = $updateActor;
         $this->actorRepository = $actorRepository;
         $this->entityManager = $entityManager;
 
@@ -34,32 +34,34 @@ class CreateActorCLICommand extends Command
             ->setDescription('Creates a new actor.')
             ->setHelp('This command allows you to create a actor...')
             ->addArgument('name', InputArgument::REQUIRED, 'Actor name')
+            ->addArgument('actorId', InputArgument::REQUIRED, 'Actor ID')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $name = $input->getArgument('name');
+        $actorId = $input->getArgument('actorId');
 
-        $command = new CreateActorCommand($name);
+        $command = new UpdateActorCommand($name, $actorId);
 
         try {
-            $this->createActor->handle($command);
+            $this->updateActor->handle($command);
             $this->entityManager->flush();
             $output->writeln([
-                'Actor Creator',
+                'Actor Update',
                 '============',
                 $name,
             ]);
         } catch (InvalidArgumentException $e) {
             $output->writeln([
-                'Actor Creator',
+                'Actor Update',
                 '============',
                 'Error: ' . $e->getMessage(),
             ]);
         } catch (RepositoryException $e) {
             $output->writeln([
-                'Actor Creator',
+                'Actor Update',
                 '============',
                 'Error: An application error has occurred',
             ]);

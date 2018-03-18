@@ -116,9 +116,17 @@ services:
         - { name: 'console.command', command: 'app:create-actor'}
 
     App\Bundle\FilmBundle\Actor\CLI\Command\DeleteActorCLICommand:
-          arguments:
-            - '@app.actor.command_handler.delete'
-            - '@app.actor.repository'
-            - '@doctrine.orm.default_entity_manager'
-          tags:
-            - { name: 'console.command', command: 'app:delete-actor'}
+      arguments:
+        - '@app.actor.command_handler.delete'
+        - '@app.actor.repository'
+        - '@doctrine.orm.default_entity_manager'
+      tags:
+        - { name: 'console.command', command: 'app:delete-actor'}
+
+    App\Bundle\FilmBundle\Actor\CLI\Command\UpdateActorCLICommand:
+      arguments:
+        - '@app.actor.command_handler.update'
+        - '@app.actor.repository'
+        - '@doctrine.orm.default_entity_manager'
+      tags:
+        - { name: 'console.command', command: 'app:update-actor'}
