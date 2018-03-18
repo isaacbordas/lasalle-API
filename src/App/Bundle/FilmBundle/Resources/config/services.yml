@@ -28,6 +28,7 @@ services:
         arguments:
           - '@app.actor.repository.cached.inner'
           - '@app.cacheservice'
+          - '@event_dispatcher'
 
     app.film.repository:
         class: App\Bundle\FilmBundle\Film\Repository\MySqlFilmRepository
@@ -42,6 +43,7 @@ services:
       arguments:
         - '@app.film.repository.cached.inner'
         - '@app.cacheservice'
+        - '@event_dispatcher'
 
     app.film.command_handler.read_by_id:
       class: App\Component\Film\Application\CommandHandler\Film\ReadFilmByIdHandler

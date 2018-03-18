@@ -60,20 +60,15 @@ class CacheService extends Controller implements CacheServiceInterface
 
     public function cacheClear(string $key): void
     {
-        $cachedir = $this->filecachepath;
-
-        $files = glob($cachedir . '/*');
-
-        foreach($files as $file) {
-            if(is_file($file)) {
-                unlink($file);
-            }
+        $filename = $this->getFileName($key);
+        if (file_exists($filename) || is_readable($filename)) {
+            unlink($filename);
         }
     }
 
     public function onDeletecache(DeleteCache $deleteCache)
     {
-        $this->cacheClear();
+        $this->cacheClear($deleteCache->getKey());
     }
 
 }

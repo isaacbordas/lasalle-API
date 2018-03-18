@@ -5,16 +5,20 @@ namespace App\Bundle\FilmBundle\Film\Repository\Decorator;
 use App\Component\Film\Domain\Film;
 use App\Component\Film\Domain\Repository\FilmRepository;
 use App\Bundle\FilmBundle\Service\CacheService;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use App\Bundle\FilmBundle\EventSubscriber\DeleteCache;
 
 final class CachedFilmRepository implements FilmRepository
 {
     private $filmRepository;
     private $cache;
+    private $dispatcher;
 
-    public function __construct(FilmRepository $filmRepository, CacheService $cache)
+    public function __construct(FilmRepository $filmRepository, CacheService $cache, EventDispatcherInterface $dispatcher)
     {
         $this->filmRepository = $filmRepository;
         $this->cache = $cache;
+        $this->dispatcher = $dispatcher;
     }
 
     public function findById(int $filmId): Film
@@ -27,7 +31,7 @@ final class CachedFilmRepository implements FilmRepository
             $this->cache->save((string) 'Film' . $filmId, $item);
         }
 
-        return $this->cache->fetch((string) 'Film' . $filmId);
+        return $item;
     }
 
     public function findAllOrderedByName()
@@ -40,7 +44,7 @@ final class CachedFilmRepository implements FilmRepository
             $this->cache->save((string) 'AllFilms', $item);
         }
 
-        return $this->cache->fetch((string) 'AllFilms');
+        return $item;
     }
 
     public function delete(Film $film): void
@@ -49,7 +53,7 @@ final class CachedFilmRepository implements FilmRepository
 
         if ($item) {
             $this->filmRepository->delete($film);
-            $this->cache->cacheClear((string) 'Film' . $film->getId());
+            $this->dispatcher->dispatch(DeleteCache::TOPIC, new DeleteCache((string) 'Film' . $film->getId()));
         }
     }
 
@@ -63,7 +67,7 @@ final class CachedFilmRepository implements FilmRepository
         $item = $this->cache->fetch((string) 'Film' . $film->getId());
 
         if ($item) {
-            $this->cache->cacheClear((string) 'Film' . $film->getId());
+            $this->dispatcher->dispatch(DeleteCache::TOPIC, new DeleteCache((string) 'Film' . $film->getId()));
         }
 
         $this->filmRepository->update($film);
