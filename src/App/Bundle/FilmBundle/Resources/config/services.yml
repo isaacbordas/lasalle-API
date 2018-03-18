@@ -130,3 +130,12 @@ services:
         - '@doctrine.orm.default_entity_manager'
       tags:
         - { name: 'console.command', command: 'app:update-actor'}
+
+    App\Bundle\FilmBundle\Actor\CLI\Command\ReadActorCLICommand:
+      arguments:
+        - '@app.actor.command_handler.read_all'
+        - '@app.actor.command_handler.read_by_id'
+        - '@app.actor.repository'
+        - '@doctrine.orm.default_entity_manager'
+      tags:
+        - { name: 'console.command', command: 'app:list-actor'}

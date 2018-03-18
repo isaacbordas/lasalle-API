@@ -40,10 +40,13 @@ class UpdateActorCLICommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $name = $input->getArgument('name');
+        $actorName = $input->getArgument('name');
         $actorId = $input->getArgument('actorId');
 
-        $command = new UpdateActorCommand($name, $actorId);
+        $name = filter_var($actorName ?? '', FILTER_SANITIZE_STRING);
+        $id = filter_var($actorId ?? '', FILTER_SANITIZE_NUMBER_INT);
+
+        $command = new UpdateActorCommand($name, $id);
 
         try {
             $this->updateActor->handle($command);

@@ -40,8 +40,9 @@ class DeleteActorCLICommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $actorId = $input->getArgument('actorId');
+        $id = filter_var($actorId ?? '', FILTER_SANITIZE_NUMBER_INT);
 
-        $command = new DeleteActorCommand($actorId);
+        $command = new DeleteActorCommand($id);
 
         try {
             $actor = $this->deleteActor->handle($command);

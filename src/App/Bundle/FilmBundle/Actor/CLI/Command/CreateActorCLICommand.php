@@ -39,7 +39,8 @@ class CreateActorCLICommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $name = $input->getArgument('name');
+        $actorName = $input->getArgument('name');
+        $name = filter_var($actorName ?? '', FILTER_SANITIZE_STRING);
 
         $command = new CreateActorCommand($name);
 
