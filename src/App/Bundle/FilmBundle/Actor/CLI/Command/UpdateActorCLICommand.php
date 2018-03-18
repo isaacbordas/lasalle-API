@@ -33,8 +33,8 @@ class UpdateActorCLICommand extends Command
             ->setName('app:update-actor')
             ->setDescription('Updates a new actor.')
             ->setHelp('This command allows you to update a actor...')
-            ->addArgument('name', InputArgument::REQUIRED, 'Actor name')
             ->addArgument('actorId', InputArgument::REQUIRED, 'Actor ID')
+            ->addArgument('name', InputArgument::REQUIRED, 'Actor name')
         ;
     }
 
