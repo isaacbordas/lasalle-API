@@ -7,27 +7,14 @@
         <title>{% block title %}{% endblock %}</title>
         {% block stylesheets %}{% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
-        <style>
-            .flash-notice{display: inline-block; padding: 5px 10px; width: 100px; color:#ffffff;}
-            .flash-notice.success{background-color: darkgreen;}
-            .flash-notice.fail{background-color: darkred;}
-        </style>
     </head>
     <body>
-    <ul>
-        <li>Change language</li>
-        <li><a href="/es/changeLang/es/{{ route }}/{{ route_params.id }}/">ES</a></li>
-        <li><a href="/en/changeLang/en/{{ route }}/{{ route_params.id }}/">EN</a></li>
-    </ul>
-    {% for type, messages in app.flashes %}
-        {% for message in messages %}
-        <div class="flash-notice {{ type }}">
-            {{ message }}
-        </div>
-        {% endfor %}
-    {% endfor %}
-    <p><a href="/{{ route_params._locale }}/clearCache/">Clear Cache</a></p>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
+        <ul>
+            <li>Change language</li>
+            <li><a href="/es/changeLang/es/{{ route }}/{{ route_params.id }}/">ES</a></li>
+            <li><a href="/en/changeLang/en/{{ route }}/{{ route_params.id }}/">EN</a></li>
+        </ul>
+            {% block body %}{% endblock %}
+            {% block javascripts %}{% endblock %}
     </body>
 </html>
