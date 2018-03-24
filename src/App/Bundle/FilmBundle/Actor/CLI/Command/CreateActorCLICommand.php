@@ -10,6 +10,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use App\Component\Film\Application\Command\Actor\CreateActorCommand;
 use App\Component\Film\Application\CommandHandler\Actor\CreateActorHandler;
 use App\Component\Film\Domain\Repository\ActorRepository;
+use App\Component\Film\Domain\Exception\{InvalidArgumentException, RepositoryException};
+use App\Bundle\FilmBundle\Services\Cache\Exception\IOErrorException;
 
 class CreateActorCLICommand extends Command
 {
@@ -63,6 +65,12 @@ class CreateActorCLICommand extends Command
                 'Actor Creator',
                 '============',
                 'Error: An application error has occurred',
+            ]);
+        } catch (IOErrorException $e) {
+            $output->writeln([
+                'Actor Creator',
+                '============',
+                'Error: ' . $e->getMessage(),
             ]);
         }
 

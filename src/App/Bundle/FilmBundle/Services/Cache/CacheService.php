@@ -3,10 +3,9 @@
 namespace App\Bundle\FilmBundle\Services\Cache;
 
 use App\Bundle\FilmBundle\EventSubscriber\DeleteCache;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Exception;
+use App\Bundle\FilmBundle\Services\Cache\Exception\{Exception, IOErrorException};
 
-class CacheService extends Controller implements CacheServiceInterface
+class CacheService extends CacheServiceInterface
 {
     private $filecachepath;
 
@@ -15,17 +14,17 @@ class CacheService extends Controller implements CacheServiceInterface
         $this->filecachepath = $filecachepath;
     }
 
-    public function save(string $key, $data): void
+    public function set($key, $data, $ttl = null): void
     {
         $handler = fopen($this->getFileName($key),'w');
         if (!$handler) {
-            throw new Exception('Could not write to cache');
+            throw new IOErrorException('Could not write to cache', 500);
         }
 
         $serializedobject = serialize($data);
 
         if (fwrite($handler, $serializedobject) === false) {
-            throw new Exception('Could not write to cache');
+            throw new IOErrorException('Could not write to cache', 500);
         }
         fclose($handler);
     }
@@ -40,7 +39,7 @@ class CacheService extends Controller implements CacheServiceInterface
         return $path . md5($key);
     }
 
-    function fetch(string $key)
+    function get($key, $default = null)
     {
        $filename = $this->getFileName($key);
         if (!file_exists($filename) || !is_readable($filename)) {
@@ -58,7 +57,7 @@ class CacheService extends Controller implements CacheServiceInterface
         return $unserializedobject;
     }
 
-    public function deleteKey(string $key): void
+    public function delete($key): void
     {
         $filename = $this->getFileName($key);
         if (file_exists($filename) || is_readable($filename)) {
@@ -66,7 +65,7 @@ class CacheService extends Controller implements CacheServiceInterface
         }
     }
 
-    public function clearCache() : void
+    public function clear() : void
     {
         $cachedir = $this->filecachepath;
         $files = glob($cachedir . '/*');
@@ -79,7 +78,7 @@ class CacheService extends Controller implements CacheServiceInterface
 
     public function onDeletecache(DeleteCache $deleteCache)
     {
-        $this->deleteKey($deleteCache->getKey());
+        $this->delete($deleteCache->getKey());
     }
 
 }

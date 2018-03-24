@@ -10,6 +10,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use App\Component\Film\Application\Command\Film\DeleteFilmCommand;
 use App\Component\Film\Application\CommandHandler\Film\DeleteFilmHandler;
 use App\Component\Film\Domain\Repository\FilmRepository;
+use App\Component\Film\Domain\Exception\{InvalidArgumentException, RepositoryException};
+use App\Bundle\FilmBundle\Services\Cache\Exception\IOErrorException;
 
 class DeleteFilmCLICommand extends Command
 {
@@ -63,6 +65,12 @@ class DeleteFilmCLICommand extends Command
                 'Film Delete',
                 '============',
                 'Error: An application error has occurred',
+            ]);
+        } catch (IOErrorException $e) {
+            $output->writeln([
+                'Film Delete',
+                '============',
+                'Error: ' . $e->getMessage(),
             ]);
         }
     }

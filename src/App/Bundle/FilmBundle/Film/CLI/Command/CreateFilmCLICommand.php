@@ -10,6 +10,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use App\Component\Film\Application\Command\Film\CreateFilmCommand;
 use App\Component\Film\Application\CommandHandler\Film\CreateFilmHandler;
 use App\Component\Film\Domain\Repository\FilmRepository;
+use App\Component\Film\Domain\Exception\{InvalidArgumentException, RepositoryException};
+use App\Bundle\FilmBundle\Services\Cache\Exception\IOErrorException;
 
 class CreateFilmCLICommand extends Command
 {
@@ -71,7 +73,12 @@ class CreateFilmCLICommand extends Command
                 '============',
                 'Error: An application error has occurred',
             ]);
+        } catch (IOErrorException $e) {
+            $output->writeln([
+                'Film Creator',
+                '============',
+                'Error: ' . $e->getMessage(),
+            ]);
         }
-
     }
 }

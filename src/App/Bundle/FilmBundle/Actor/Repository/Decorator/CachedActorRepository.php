@@ -26,12 +26,12 @@ final class CachedActorRepository implements ActorRepository
        if ($cache == false) {
            $item = $this->actorRepository->findById($actorId);
        } else {
-           $item = $this->cache->fetch((string)'Actor' . $actorId);
+           $item = $this->cache->get((string)'actor' . $actorId);
 
            if (!$item) {
                $item = $this->actorRepository->findById($actorId);
 
-               $this->cache->save((string)'Actor' . $actorId, $item);
+               $this->cache->set((string)'actor' . $actorId, $item);
            }
        }
 
@@ -40,12 +40,12 @@ final class CachedActorRepository implements ActorRepository
 
     public function findAllOrderedByName(bool $cache = true)
     {
-        $item = $this->cache->fetch((string) 'AllActors');
+        $item = $this->cache->get((string) 'allactors');
 
         if (!$item) {
             $item = $this->actorRepository->findAllOrderedByName();
 
-            $this->cache->save((string) 'AllActors', $item);
+            $this->cache->set((string) 'allactors', $item);
         }
 
         return $item;
@@ -53,26 +53,28 @@ final class CachedActorRepository implements ActorRepository
 
    public function delete(Actor $actor): void
    {
-       $item = $this->cache->fetch((string) 'Actor' . $actor->getId());
+       $item = $this->cache->get((string) 'actor' . $actor->getId());
 
        if ($item) {
            $this->actorRepository->delete($actor);
-           $this->dispatcher->dispatch(DeleteCache::TOPIC, new DeleteCache((string) 'Actor' . $actor->getId()));
+           $this->dispatcher->dispatch(DeleteCache::TOPIC, new DeleteCache((string) 'actor' . $actor->getId()));
+           $this->dispatcher->dispatch(DeleteCache::TOPIC, new DeleteCache((string) 'allactors'));
        }
    }
 
    public function save(Actor $actor): void
    {
        $this->actorRepository->save($actor);
-       $this->dispatcher->dispatch(DeleteCache::TOPIC, new DeleteCache((string) 'AllActors'));
+       $this->dispatcher->dispatch(DeleteCache::TOPIC, new DeleteCache((string) 'allactors'));
    }
 
    public function update(Actor $actor): void
    {
-       $item = $this->cache->fetch((string) 'Actor' . $actor->getId());
+       $item = $this->cache->get((string) 'actor' . $actor->getId());
 
        if ($item) {
-           $this->dispatcher->dispatch(DeleteCache::TOPIC, new DeleteCache((string) 'Actor' . $actor->getId()));
+           $this->dispatcher->dispatch(DeleteCache::TOPIC, new DeleteCache((string) 'actor' . $actor->getId()));
+           $this->dispatcher->dispatch(DeleteCache::TOPIC, new DeleteCache((string) 'allactors'));
        }
 
        $this->actorRepository->update($actor);

@@ -7,8 +7,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use App\Component\Film\Domain\Film;
 use App\Component\Film\Application\Command\Film\ReadFilmByIdCommand;
-use App\Component\Film\Domain\Exception\InvalidArgumentException;
-use App\Component\Film\Domain\Exception\RepositoryException;
+use App\Component\Film\Domain\Exception\{InvalidArgumentException, RepositoryException};
+use App\Bundle\FilmBundle\Services\Cache\Exception\IOErrorException;
 
 class ListFilmsController extends Controller
 {
@@ -31,6 +31,8 @@ class ListFilmsController extends Controller
             return new JsonResponse(['error' => $e->getMessage()], 400);
         } catch (RepositoryException $e) {
             return new JsonResponse(['error' => 'An application error has occurred'], 500);
+        } catch (IOErrorException $e) {
+            return new JsonResponse(['error' => $e], 500);
         }
     }
 
@@ -52,6 +54,8 @@ class ListFilmsController extends Controller
             return new JsonResponse(['error' => $e->getMessage()], 400);
         } catch (RepositoryException $e) {
             return new JsonResponse(['error' => 'An application error has occurred'], 500);
+        } catch (IOErrorException $e) {
+            return new JsonResponse(['error' => $e], 500);
         }
     }
 

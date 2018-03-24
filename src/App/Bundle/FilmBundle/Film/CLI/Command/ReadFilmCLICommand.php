@@ -12,6 +12,8 @@ use App\Component\Film\Application\Command\Film\ReadFilmByIdCommand;
 use App\Component\Film\Application\CommandHandler\Film\ReadFilmByIdHandler;
 use App\Component\Film\Domain\Film;
 use App\Component\Film\Domain\Repository\FilmRepository;
+use App\Component\Film\Domain\Exception\{InvalidArgumentException, RepositoryException};
+use App\Bundle\FilmBundle\Services\Cache\Exception\IOErrorException;
 
 class ReadFilmCLICommand extends Command
 {
@@ -68,6 +70,12 @@ class ReadFilmCLICommand extends Command
                     '============',
                     'Error: An application error has occurred',
                 ]);
+            } catch (IOErrorException $e) {
+                $output->writeln([
+                    'Film List by ID',
+                    '============',
+                    'Error: ' . $e->getMessage(),
+                ]);
             }
         } else {
             try {
@@ -97,6 +105,12 @@ class ReadFilmCLICommand extends Command
                     'Film List',
                     '============',
                     'Error: An application error has occurred',
+                ]);
+            } catch (IOErrorException $e) {
+                $output->writeln([
+                    'Film List',
+                    '============',
+                    'Error: ' . $e->getMessage(),
                 ]);
             }
         }

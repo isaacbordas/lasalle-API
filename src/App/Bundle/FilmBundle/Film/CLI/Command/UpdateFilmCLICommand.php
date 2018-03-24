@@ -10,6 +10,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use App\Component\Film\Application\Command\Film\UpdateFilmCommand;
 use App\Component\Film\Application\CommandHandler\Film\UpdateFilmHandler;
 use App\Component\Film\Domain\Repository\FilmRepository;
+use App\Component\Film\Domain\Exception\{InvalidArgumentException, RepositoryException};
+use App\Bundle\FilmBundle\Services\Cache\Exception\IOErrorException;
 
 class UpdateFilmCLICommand extends Command
 {
@@ -73,6 +75,12 @@ class UpdateFilmCLICommand extends Command
                 'Film Update',
                 '============',
                 'Error: An application error has occurred',
+            ]);
+        } catch (IOErrorException $e) {
+            $output->writeln([
+                'Film Update',
+                '============',
+                'Error: ' . $e->getMessage(),
             ]);
         }
 

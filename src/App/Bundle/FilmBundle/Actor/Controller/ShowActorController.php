@@ -5,8 +5,9 @@ namespace App\Bundle\FilmBundle\Actor\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use App\Component\Film\Domain\Actor;
 use App\Component\Film\Application\Command\Actor\ReadActorByIdCommand;
-use App\Component\Film\Domain\Exception\InvalidArgumentException;
-use App\Component\Film\Domain\Exception\RepositoryException;
+use App\Component\Film\Domain\Exception\{InvalidArgumentException, RepositoryException};
+use App\Bundle\FilmBundle\Services\Cache\Exception\IOErrorException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ShowActorController extends Controller
 {
@@ -28,6 +29,8 @@ class ShowActorController extends Controller
             return new JsonResponse(['error' => $e->getMessage()], 400);
         } catch (RepositoryException $e) {
             return new JsonResponse(['error' => 'An application error has occurred'], 500);
+        } catch (IOErrorException $e) {
+            return new JsonResponse(['error' => $e], 500);
         }
 
     }

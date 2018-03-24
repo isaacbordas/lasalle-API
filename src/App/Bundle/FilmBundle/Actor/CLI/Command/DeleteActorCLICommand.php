@@ -10,6 +10,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use App\Component\Film\Application\Command\Actor\DeleteActorCommand;
 use App\Component\Film\Application\CommandHandler\Actor\DeleteActorHandler;
 use App\Component\Film\Domain\Repository\ActorRepository;
+use App\Component\Film\Domain\Exception\{InvalidArgumentException, RepositoryException};
+use App\Bundle\FilmBundle\Services\Cache\Exception\IOErrorException;
 
 class DeleteActorCLICommand extends Command
 {
@@ -63,6 +65,12 @@ class DeleteActorCLICommand extends Command
                 'Actor Delete',
                 '============',
                 'Error: An application error has occurred',
+            ]);
+        } catch (IOErrorException $e) {
+            $output->writeln([
+                'Actor Delete',
+                '============',
+                'Error: ' . $e->getMessage(),
             ]);
         }
 

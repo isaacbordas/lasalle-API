@@ -7,6 +7,7 @@ use App\Component\Film\Domain\Repository\FilmRepository;
 use App\Bundle\FilmBundle\Services\Cache\CacheService;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use App\Bundle\FilmBundle\EventSubscriber\DeleteCache;
+use App\Bundle\FilmBundle\Services\Cache\Exception\{Exception, IOErrorException};
 
 final class CachedFilmRepository implements FilmRepository
 {
@@ -26,12 +27,12 @@ final class CachedFilmRepository implements FilmRepository
         if($cache == false){
             $item = $this->filmRepository->findById($filmId);
         }else {
-            $item = $this->cache->fetch((string)'Film' . $filmId);
+            $item = $this->cache->get((string)'film' . $filmId);
 
             if (!$item) {
                 $item = $this->filmRepository->findById($filmId);
 
-                $this->cache->save((string)'Film' . $filmId, $item);
+                $this->cache->set((string)'film' . $filmId, $item);
             }
         }
 
@@ -40,12 +41,12 @@ final class CachedFilmRepository implements FilmRepository
 
     public function findAllOrderedByName(bool $cache = true)
     {
-        $item = $this->cache->fetch((string) 'AllFilms');
+        $item = $this->cache->get((string) 'allfilms');
 
         if (!$item) {
             $item = $this->filmRepository->findAllOrderedByName();
 
-            $this->cache->save((string) 'AllFilms', $item);
+            $this->cache->set((string) 'allfilms', $item);
         }
 
         return $item;
@@ -53,26 +54,28 @@ final class CachedFilmRepository implements FilmRepository
 
     public function delete(Film $film): void
     {
-        $item = $this->cache->fetch((string) 'Film' . $film->getId());
+        $item = $this->cache->get((string) 'film' . $film->getId());
 
         if ($item) {
             $this->filmRepository->delete($film);
-            $this->dispatcher->dispatch(DeleteCache::TOPIC, new DeleteCache((string) 'Film' . $film->getId()));
+            $this->dispatcher->dispatch(DeleteCache::TOPIC, new DeleteCache((string) 'film' . $film->getId()));
+            $this->dispatcher->dispatch(DeleteCache::TOPIC, new DeleteCache((string) 'allfilms'));
         }
     }
 
     public function save(Film $film): void
     {
         $this->filmRepository->save($film);
-        $this->dispatcher->dispatch(DeleteCache::TOPIC, new DeleteCache((string) 'AllFilms'));
+        $this->dispatcher->dispatch(DeleteCache::TOPIC, new DeleteCache((string) 'allfilms'));
     }
 
     public function update(Film $film): void
     {
-        $item = $this->cache->fetch((string) 'Film' . $film->getId());
+        $item = $this->cache->get((string) 'film' . $film->getId());
 
         if ($item) {
-            $this->dispatcher->dispatch(DeleteCache::TOPIC, new DeleteCache((string) 'Film' . $film->getId()));
+            $this->dispatcher->dispatch(DeleteCache::TOPIC, new DeleteCache((string) 'film' . $film->getId()));
+            $this->dispatcher->dispatch(DeleteCache::TOPIC, new DeleteCache((string) 'allfilms'));
         }
 
         $this->filmRepository->update($film);

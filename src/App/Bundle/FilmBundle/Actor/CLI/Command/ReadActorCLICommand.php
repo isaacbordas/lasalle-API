@@ -12,6 +12,8 @@ use App\Component\Film\Application\Command\Actor\ReadActorByIdCommand;
 use App\Component\Film\Application\CommandHandler\Actor\ReadActorByIdHandler;
 use App\Component\Film\Domain\Actor;
 use App\Component\Film\Domain\Repository\ActorRepository;
+use App\Component\Film\Domain\Exception\{InvalidArgumentException, RepositoryException};
+use App\Bundle\FilmBundle\Services\Cache\Exception\IOErrorException;
 
 class ReadActorCLICommand extends Command
 {
@@ -68,6 +70,12 @@ class ReadActorCLICommand extends Command
                     '============',
                     'Error: An application error has occurred',
                 ]);
+            } catch (IOErrorException $e) {
+                $output->writeln([
+                    'Actor List by ID',
+                    '============',
+                    'Error: ' . $e->getMessage(),
+                ]);
             }
         } else {
             try {
@@ -97,6 +105,12 @@ class ReadActorCLICommand extends Command
                     'Actor List',
                     '============',
                     'Error: An application error has occurred',
+                ]);
+            } catch (IOErrorException $e) {
+                $output->writeln([
+                    'Actor List',
+                    '============',
+                    'Error: ' . $e->getMessage(),
                 ]);
             }
         }

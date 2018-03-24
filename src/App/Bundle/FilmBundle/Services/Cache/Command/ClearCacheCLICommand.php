@@ -30,7 +30,7 @@ class ClearCacheCLICommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->cache->clearCache();
+        $this->cache->clear();
 
         $output->writeln([
             'Cache deleted',
