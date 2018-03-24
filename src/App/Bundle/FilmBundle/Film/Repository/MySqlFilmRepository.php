@@ -5,7 +5,7 @@ namespace App\Bundle\FilmBundle\Film\Repository;
 use App\Component\Film\Domain\Film;
 use App\Component\Film\Domain\Repository\FilmRepository;
 use App\Component\Film\Domain\Exception\RepositoryException;
-use App\Component\Film\Domain\Exception\UnknownActorException;
+use App\Component\Film\Domain\Exception\UnknowFilmException;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
@@ -48,7 +48,7 @@ class MySqlFilmRepository implements FilmRepository
             ->getRepository('FilmBundle:Film')
             ->findBy(['id' => $filmId]);
         if (count($film) === 0) {
-            throw UnknownActorException::withActorId($filmId);
+            throw UnknowFilmException::withFilmId($filmId);
         }
         return $film[0];
     }

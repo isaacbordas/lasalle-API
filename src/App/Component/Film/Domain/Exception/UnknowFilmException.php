@@ -4,19 +4,19 @@ namespace App\Component\Film\Domain\Exception;
 
 use Throwable;
 
-class UnknownActorException extends BadOperationException
+class UnknowFilmException extends BadOperationException
 {
-    public $actorId;
+    public $filmId;
 
     public function __construct(string $message = "", int $code = 0, Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
     }
 
-    public static function withActorId(int $id):self
+    public static function withFilmId(int $id):self
     {
-        $e = new static("Actor with id [$id] doesn't exist");
-        $e->actorId = $id;
+        $e = new static("Film with id [$id] doesn't exist");
+        $e->filmId = $id;
         return $e;
     }
 }
