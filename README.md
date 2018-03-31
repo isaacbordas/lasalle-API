@@ -85,3 +85,5 @@ php bin/console app:update-film 1 "Film CLI 1" "Description CLI 1" 1
 php bin/console app:delete-actor 1
 ###### Eliminar film determinado
 php bin/console app:delete-film 1
+###### Borrar completamente al caché via CLI
+php bin/console app:clear-cache
